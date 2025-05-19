@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "O0mD9bzBktCbs9zuKUlzk4uB6+TZF7lpQhvd6l8+M4U=",
+  "Source": "ContabilidadAPIV2",
+  "BasePath": "_content/ContabilidadAPIV2",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

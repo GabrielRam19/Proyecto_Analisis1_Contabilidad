@@ -1,0 +1,6 @@
+@ContabilidadAPIV2_HostAddress = http://localhost:5152
+
+GET {{ContabilidadAPIV2_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

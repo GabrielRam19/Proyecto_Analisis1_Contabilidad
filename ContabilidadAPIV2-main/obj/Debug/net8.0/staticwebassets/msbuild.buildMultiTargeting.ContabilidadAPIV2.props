@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\ContabilidadAPIV2.props" />
+</Project>

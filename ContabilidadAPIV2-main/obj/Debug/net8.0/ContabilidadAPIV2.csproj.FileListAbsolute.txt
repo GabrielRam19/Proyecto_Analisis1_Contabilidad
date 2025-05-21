@@ -223,3 +223,4 @@ C:\Users\jramirez\Downloads\Proyecto\ContabilidadAPIV2-main\obj\Debug\net8.0\ref
 C:\Users\jramirez\Downloads\Proyecto\ContabilidadAPIV2-main\obj\Debug\net8.0\ContabilidadAPIV2.pdb
 C:\Users\jramirez\Downloads\Proyecto\ContabilidadAPIV2-main\obj\Debug\net8.0\ContabilidadAPIV2.genruntimeconfig.cache
 C:\Users\jramirez\Downloads\Proyecto\ContabilidadAPIV2-main\obj\Debug\net8.0\ref\ContabilidadAPIV2.dll
+C:\Users\jramirez\Downloads\Proyecto\ContabilidadAPIV2-main\obj\Debug\net8.0\ContabilidadAPIV2.sourcelink.json

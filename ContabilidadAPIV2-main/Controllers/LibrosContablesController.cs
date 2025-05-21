@@ -61,17 +61,15 @@ namespace ContabilidadAPIV2.Controllers
         [HttpPost("LibroMayor")]
         public async Task<ActionResult<IEnumerable<LibroMayorAgrupado>>> GetLibroMayor(RequestConsultaLibros requestConsulta)
         {
-            // Obtener el período según el id_periodo
             var periodo = await _context.PERIODO
-                .Where(p => p.id_periodo == requestConsulta.id_periodo)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(p => p.id_periodo == requestConsulta.id_periodo);
 
             if (periodo == null)
                 return NotFound("Periodo no encontrado");
 
             var query = @"
 SELECT 
-    d.detalle_id, -- clave
+    d.detalle_id,
     c.cuenta_id,
     c.codigo,
     c.nombre,
@@ -79,8 +77,7 @@ SELECT
     a.descripcion,
     a.fecha,
     d.debe,
-    d.haber,
-    SUM(d.debe - d.haber) OVER (PARTITION BY c.cuenta_id ORDER BY a.fecha, a.asiento_id, d.detalle_id) AS saldo
+    d.haber
 FROM 
     DETALLE_ASIENTO d
 JOIN 
@@ -90,25 +87,54 @@ JOIN
 WHERE
     a.fecha BETWEEN @FechaInicio AND @FechaFin
 ORDER BY
-    c.cuenta_id, a.fecha, a.asiento_id";
+    c.cuenta_id, a.fecha, a.asiento_id, d.detalle_id";
 
-            var movimientos = await _context.Set<LibroMayorMovimientoDto>()
+            var saldosIniciales = await _context.SALDOCUENTAPERIODO
+    .Where(s => s.id_periodo == requestConsulta.id_periodo)
+    .ToDictionaryAsync(s => s.cuenta_id, s => s.saldo_inicial);
+
+            var movimientosRaw = await _context.Set<LibroMayorMovimientoRawDto>()
                 .FromSqlRaw(query,
                     new SqlParameter("@FechaInicio", periodo.fecha_inicio.ToDateTime(TimeOnly.MinValue)),
                     new SqlParameter("@FechaFin", periodo.fecha_fin.ToDateTime(TimeOnly.MinValue)))
                 .ToListAsync();
 
             // Agrupar por cuenta
-            var agrupado = movimientos
-                .GroupBy(m => new { m.Cuenta_Id, m.Codigo, m.Nombre })
-                .Select(g => new LibroMayorAgrupado
-                {
-                    CuentaId = g.Key.Cuenta_Id,
-                    Codigo = g.Key.Codigo,
-                    Nombre = g.Key.Nombre,
-                    Movimientos = g.ToList()
-                })
-                .ToList();
+            var agrupado = movimientosRaw
+    .GroupBy(m => new { m.Cuenta_Id, m.Codigo, m.Nombre })
+    .Select(g =>
+    {
+        decimal saldoInicial = saldosIniciales.TryGetValue(g.Key.Cuenta_Id, out var s) ? s : 0;
+        decimal saldoAcumulado = saldoInicial;
+
+        var movimientosConSaldo = g.Select(m =>
+        {
+            saldoAcumulado += m.Debe - m.Haber;
+            return new LibroMayorMovimientoDto
+            {
+                Detalle_Id = m.Detalle_Id,
+                Cuenta_Id = m.Cuenta_Id,
+                Codigo = m.Codigo,
+                Nombre = m.Nombre,
+                Asiento_Id = m.Asiento_Id,
+                Descripcion = m.Descripcion,
+                Fecha = m.Fecha,
+                Debe = m.Debe,
+                Haber = m.Haber,
+                Saldo = saldoAcumulado
+            };
+        }).ToList();
+
+        return new LibroMayorAgrupado
+        {
+            CuentaId = g.Key.Cuenta_Id,
+            Codigo = g.Key.Codigo,
+            Nombre = g.Key.Nombre,
+            SaldoInicial = saldoInicial,
+            Movimientos = movimientosConSaldo
+        };
+    })
+    .ToList();
 
             return agrupado;
         }
@@ -117,40 +143,58 @@ ORDER BY
         public async Task<ActionResult<IEnumerable<BalanceSaldosDto>>> GetBalanceSaldos(RequestConsultaLibros requestConsulta)
         {
             var periodo = await _context.PERIODO
-                .Where(p => p.id_periodo == requestConsulta.id_periodo)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(p => p.id_periodo == requestConsulta.id_periodo);
 
             if (periodo == null)
                 return NotFound("Periodo no encontrado");
 
+            // Obtener saldos iniciales del periodo
+            var saldosIniciales = await _context.SALDOCUENTAPERIODO
+                .Where(s => s.id_periodo == requestConsulta.id_periodo)
+                .ToDictionaryAsync(s => s.cuenta_id, s => s.saldo_inicial);
+
+            // Consulta de movimientos del periodo
             var query = @"
-    SELECT 
-        c.cuenta_id,
-        c.codigo,
-        c.nombre,
+SELECT 
+    c.cuenta_id,
+    c.codigo,
+    c.nombre,
 
-        -- Saldo inicial antes del periodo
-        ISNULL(SUM(CASE WHEN a.fecha < @FechaInicio THEN d.debe - d.haber ELSE 0 END), 0) AS saldo_inicial,
+    ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.debe ELSE 0 END), 0) AS total_debe,
+    ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.haber ELSE 0 END), 0) AS total_haber
 
-        -- Movimientos dentro del periodo
-        ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.debe ELSE 0 END), 0) AS total_debe,
-        ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.haber ELSE 0 END), 0) AS total_haber,
+FROM Detalle_Asiento d
+JOIN Cuentas c ON d.cuenta_id = c.cuenta_id
+JOIN Asientos a ON d.asiento_id = a.asiento_id
+WHERE a.fecha BETWEEN @FechaInicio AND @FechaFin
+GROUP BY c.cuenta_id, c.codigo, c.nombre
+ORDER BY c.codigo";
 
-        -- Saldo final = saldo inicial + movimientos periodo
-        ISNULL(SUM(CASE WHEN a.fecha < @FechaInicio THEN d.debe - d.haber ELSE 0 END), 0) +
-        ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.debe - d.haber ELSE 0 END), 0) AS saldo_final
-
-    FROM Detalle_Asiento d
-    JOIN Cuentas c ON d.cuenta_id = c.cuenta_id
-    JOIN Asientos a ON d.asiento_id = a.asiento_id
-    GROUP BY c.cuenta_id, c.codigo, c.nombre
-    ORDER BY c.codigo";
-
-            var resultado = await _context.Set<BalanceSaldosDto>()
+            var movimientosPeriodo = await _context.Set<BalanceSaldosParcialDto>() // Nuevo DTO intermedio
                 .FromSqlRaw(query,
                     new SqlParameter("@FechaInicio", periodo.fecha_inicio),
                     new SqlParameter("@FechaFin", periodo.fecha_fin))
                 .ToListAsync();
+
+            // Combinar con saldos iniciales
+            var resultado = movimientosPeriodo
+                .Select(m =>
+                {
+                    var saldoInicial = saldosIniciales.TryGetValue(m.Cuenta_Id, out var s) ? s : 0;
+                    var saldoFinal = saldoInicial + (m.Total_Debe - m.Total_Haber);
+
+                    return new BalanceSaldosDto
+                    {
+                        Cuenta_Id = m.Cuenta_Id,
+                        Codigo = m.Codigo,
+                        Nombre = m.Nombre,
+                        Saldo_Inicial = saldoInicial,
+                        Total_Debe = m.Total_Debe,
+                        Total_Haber = m.Total_Haber,
+                        Saldo_Final = saldoFinal
+                    };
+                })
+                .ToList();
 
             return Ok(resultado);
         }
@@ -191,84 +235,133 @@ ORDER BY
         [HttpPost("BalanceGeneral")]
         public async Task<ActionResult<IEnumerable<BalanceGeneral>>> GetBalanceGeneral(RequestConsultaLibros requestConsulta)
         {
-            var query = @"
-                SELECT 
-                    c.cuenta_id,
-                    c.codigo,
-                    c.nombre,
-                    SUM(d.debe) AS total_debe,
-                    SUM(d.haber) AS total_haber,
-                    SUM(d.debe - d.haber) AS saldo,
-                    c.tipo
-                FROM 
-                    Detalle_Asiento d
-                JOIN 
-                    Cuentas c ON d.cuenta_id = c.cuenta_id
-                JOIN 
-                    Asientos a ON d.asiento_id = a.asiento_id
-                WHERE 
-                    c.tipo IN ('Activo', 'Pasivo', 'Capital') AND
-                    a.id_periodo = @PeriodoId
-                GROUP BY 
-                    c.cuenta_id, c.codigo, c.nombre, c.tipo
-                ORDER BY 
-                    c.codigo";
+            // Obtener periodo
+            var periodo = await _context.PERIODO
+                .FirstOrDefaultAsync(p => p.id_periodo == requestConsulta.id_periodo);
 
-            return await _context.Set<BalanceGeneral>()
+            if (periodo == null)
+                return NotFound("Periodo no encontrado");
+
+            // Obtener saldos iniciales del periodo para cuentas relevantes
+            var saldosIniciales = await _context.SALDOCUENTAPERIODO
+                .Where(s => s.id_periodo == requestConsulta.id_periodo)
+                .Join(_context.CUENTAS,
+                      saldo => saldo.cuenta_id,
+                      cuenta => cuenta.CUENTA_ID,
+                      (saldo, cuenta) => new { cuenta.CUENTA_ID, cuenta.CODIGO, cuenta.NOMBRE, cuenta.TIPO, saldo.saldo_inicial })
+                .Where(x => x.TIPO == "Activo" || x.TIPO == "Pasivo" || x.TIPO == "Capital")
+                .ToListAsync();
+
+            // Obtener movimientos del periodo actual (debe/haber)
+            var query = @"
+        SELECT 
+            c.cuenta_id,
+            SUM(d.debe) AS total_debe,
+            SUM(d.haber) AS total_haber
+        FROM 
+            Detalle_Asiento d
+        JOIN 
+            Asientos a ON d.asiento_id = a.asiento_id
+        JOIN 
+            Cuentas c ON d.cuenta_id = c.cuenta_id
+        WHERE 
+            c.tipo IN ('Activo', 'Pasivo', 'Capital') AND
+            a.id_periodo = @PeriodoId
+        GROUP BY 
+            c.cuenta_id";
+
+            var movimientos = await _context.Set<BalanceGeneralMovimientoParcialDto>()
                 .FromSqlRaw(query, new SqlParameter("@PeriodoId", requestConsulta.id_periodo))
                 .ToListAsync();
+
+            // Combinar saldos iniciales con movimientos
+            var resultado = saldosIniciales.Select(s =>
+            {
+                var movimiento = movimientos.FirstOrDefault(m => m.Cuenta_Id == s.CUENTA_ID);
+                var debe = movimiento?.Total_Debe ?? 0;
+                var haber = movimiento?.Total_Haber ?? 0;
+                var saldo = s.saldo_inicial + (debe - haber);
+                var tipoSaldo = saldo >= 0 ? "Deudor" : "Acreedor";
+
+                return new BalanceGeneral
+                {
+                    CUENTA_ID = s.CUENTA_ID,
+                    Codigo = s.CODIGO,
+                    Nombre = s.NOMBRE,
+                    Tipo = s.TIPO,
+                    SaldoInicial = s.saldo_inicial,
+                    TOTAL_DEBE = debe,
+                    TOTAL_HABER = haber,
+                    Saldo = saldo,
+                    TipoSaldo = tipoSaldo
+                };
+            }).ToList();
+
+            return Ok(resultado);
         }
 
         [HttpPost("EstadosFinancieros")]
         public async Task<ActionResult<IEnumerable<EstadosFinancieros>>> GetEstadosFinancieros(RequestConsultaLibros requestConsulta)
         {
+            var periodo = await _context.PERIODO
+                .Where(p => p.id_periodo == requestConsulta.id_periodo)
+                .FirstOrDefaultAsync();
+
+            if (periodo == null)
+                return NotFound("Periodo no encontrado");
+
             var query = @"
-    SELECT 
-        'Balance General' AS tipo_estado,
-        c.cuenta_id,
-        c.codigo,
-        c.nombre,
-        SUM(d.debe) AS total_debe,
-        SUM(d.haber) AS total_haber,
-        SUM(d.debe - d.haber) AS saldo
-    FROM 
-        Detalle_Asiento d
-    JOIN 
-        Cuentas c ON d.cuenta_id = c.cuenta_id
-    JOIN 
-        Asientos a ON d.asiento_id = a.asiento_id
-    WHERE 
-        c.tipo IN ('Activo', 'Pasivo', 'Capital') AND
-        a.id_periodo = @PeriodoId
-    GROUP BY 
-        c.cuenta_id, c.codigo, c.nombre
+-- BALANCE GENERAL
+SELECT 
+    'Balance General' AS tipo_estado,
+    c.cuenta_id,
+    c.codigo,
+    c.nombre,
 
-    UNION ALL
+    -- Sumas históricas hasta antes del periodo
+    ISNULL(SUM(CASE WHEN a.fecha < @FechaInicio THEN d.debe ELSE 0 END), 0) AS total_debe,
+    ISNULL(SUM(CASE WHEN a.fecha < @FechaInicio THEN d.haber ELSE 0 END), 0) AS total_haber,
+    ISNULL(SUM(CASE WHEN a.fecha < @FechaInicio THEN d.debe - d.haber ELSE 0 END), 0) +
+    ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.debe - d.haber ELSE 0 END), 0) AS saldo
 
-    SELECT 
-        'Estado de Resultados' AS tipo_estado,
-        c.cuenta_id,
-        c.codigo,
-        c.nombre,
-        SUM(d.debe) AS total_debe,
-        SUM(d.haber) AS total_haber,
-        SUM(d.haber - d.debe) AS saldo
-    FROM 
-        Detalle_Asiento d
-    JOIN 
-        Cuentas c ON d.cuenta_id = c.cuenta_id
-    JOIN 
-        Asientos a ON d.asiento_id = a.asiento_id
-    WHERE 
-        c.tipo IN ('Ingreso', 'Gasto') AND
-        a.id_periodo = @PeriodoId
-    GROUP BY 
-        c.cuenta_id, c.codigo, c.nombre";
+FROM Detalle_Asiento d
+JOIN Cuentas c ON d.cuenta_id = c.cuenta_id
+JOIN Asientos a ON d.asiento_id = a.asiento_id
+WHERE 
+    c.tipo IN ('Activo', 'Pasivo', 'Capital')
+    AND a.fecha <= @FechaFin  -- Limita a asientos hasta el final del periodo
+GROUP BY c.cuenta_id, c.codigo, c.nombre
 
-            return await _context.Set<EstadosFinancieros>()
+UNION ALL
+
+-- ESTADO DE RESULTADOS
+SELECT 
+    'Estado de Resultados' AS tipo_estado,
+    c.cuenta_id,
+    c.codigo,
+    c.nombre,
+
+    -- Solo movimientos dentro del periodo
+    ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.debe ELSE 0 END), 0) AS total_debe,
+    ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.haber ELSE 0 END), 0) AS total_haber,
+    ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.haber - d.debe ELSE 0 END), 0) AS saldo
+
+FROM Detalle_Asiento d
+JOIN Cuentas c ON d.cuenta_id = c.cuenta_id
+JOIN Asientos a ON d.asiento_id = a.asiento_id
+WHERE 
+    c.tipo IN ('Ingreso', 'Gasto')
+    AND a.fecha BETWEEN @FechaInicio AND @FechaFin -- Filtra asientos dentro del periodo
+GROUP BY c.cuenta_id, c.codigo, c.nombre
+";
+
+            var resultado = await _context.Set<EstadosFinancieros>()
                 .FromSqlRaw(query,
-                    new SqlParameter("@PeriodoId", requestConsulta.id_periodo))
+                    new SqlParameter("@FechaInicio", periodo.fecha_inicio),
+                    new SqlParameter("@FechaFin", periodo.fecha_fin))
                 .ToListAsync();
+
+            return Ok(resultado);
         }
 
     }

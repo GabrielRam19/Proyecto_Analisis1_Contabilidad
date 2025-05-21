@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
-  Typography, Button, Box, MenuItem, Select, InputLabel, FormControl
+  Typography, Button, Box, MenuItem, Select, InputLabel, FormControl, Alert, IconButton
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -18,16 +19,29 @@ const LibroMayor = () => {
   const [libroMayor, setLibroMayor] = useState([]);
   const [periodos, setPeriodos] = useState([]);
   const [periodoSeleccionado, setPeriodoSeleccionado] = useState('');
+  const [periodoEstado, setPeriodoEstado] = useState(null); // true = cerrado, false = abierto
+  const [showAlert, setShowAlert] = useState(false);
 
-  // Cargar los periodos al iniciar el componente
   useEffect(() => {
-    axios.get('http://localhost:5000/api/periodos') // Ajusta esta URL según tu API de periodos
+    axios.get('http://localhost:5000/api/periodos')
       .then(response => setPeriodos(response.data))
       .catch(error => console.error('Error al cargar periodos:', error));
   }, []);
 
   const handleChangePeriodo = (event) => {
-    setPeriodoSeleccionado(event.target.value);
+    const idPeriodo = event.target.value;
+    setPeriodoSeleccionado(idPeriodo);
+
+    // Buscar el estado del periodo seleccionado
+    const periodo = periodos.find(p => p.id_periodo === idPeriodo);
+    if (periodo) {
+      setPeriodoEstado(periodo.estado);
+      // Mostrar alerta si periodo abierto (estado == false)
+      setShowAlert(periodo.estado === false);
+    } else {
+      setPeriodoEstado(null);
+      setShowAlert(false);
+    }
   };
 
   const handleSubmit = (event) => {
@@ -42,8 +56,17 @@ const LibroMayor = () => {
   };
 
   const exportToExcel = () => {
-    const flatData = libroMayor.flatMap(cuenta =>
-      cuenta.movimientos.map(mov => ({
+    const flatData = libroMayor.flatMap(cuenta => [
+      {
+        Codigo: cuenta.codigo,
+        Nombre: cuenta.nombre,
+        Fecha: '',
+        Descripcion: 'Saldo Inicial',
+        Debe: '',
+        Haber: '',
+        Saldo: cuenta.saldoInicial
+      },
+      ...cuenta.movimientos.map(mov => ({
         Codigo: cuenta.codigo,
         Nombre: cuenta.nombre,
         Fecha: mov.fecha,
@@ -52,7 +75,8 @@ const LibroMayor = () => {
         Haber: mov.haber,
         Saldo: mov.saldo,
       }))
-    );
+    ]);
+
     const worksheet = XLSX.utils.json_to_sheet(flatData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'LibroMayor');
@@ -67,14 +91,25 @@ const LibroMayor = () => {
     doc.setTextColor(0, 0, 0);
 
     libroMayor.forEach((cuenta, index) => {
+      const startY = doc.autoTable.previous?.finalY + 20 || 40;
+
       doc.setFontSize(14);
-      doc.text(`${cuenta.codigo} - ${cuenta.nombre}`, 20, doc.autoTable.previous?.finalY + 10 || 30);
+      doc.text(`${cuenta.codigo} - ${cuenta.nombre}`, 20, startY - 10);
+
+      const bodyData = [
+        ['--', '', '', cuenta.saldoInicial.toFixed(2)], // Saldo inicial
+        ...cuenta.movimientos.map(mov => [
+          mov.fecha,
+          mov.debe.toFixed(2),
+          mov.haber.toFixed(2),
+          mov.saldo.toFixed(2),
+        ]),
+      ];
 
       doc.autoTable({
-        startY: doc.autoTable.previous?.finalY + 20 || 40,
+        startY,
         head: [['Fecha', 'Debe', 'Haber', 'Saldo']],
-        body: cuenta.movimientos.map(mov =>
-          [mov.fecha, mov.debe, mov.haber, mov.saldo]),
+        body: bodyData,
       });
     });
 
@@ -84,7 +119,7 @@ const LibroMayor = () => {
   const formatter = new Intl.NumberFormat('es-MX', {
     style: 'currency',
     currency: 'GTQ',
-    minimumFractionDigits: 0,
+    minimumFractionDigits: 2,
   });
 
   return (
@@ -102,7 +137,26 @@ const LibroMayor = () => {
         Libro Mayor
       </Typography>
 
-      {/* Formulario para seleccionar periodo */}
+      {/* ALERTA SI PERIODO ABIERTO */}
+      {showAlert && (
+        <Alert
+          severity="warning"
+          action={
+            <IconButton
+              aria-label="cerrar alerta"
+              color="inherit"
+              size="small"
+              onClick={() => setShowAlert(false)}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 3 }}
+        >
+          Está mostrando un período abierto. Los valores mostrados no incluyen saldos del período anterior.
+        </Alert>
+      )}
+
       <Box component="form" onSubmit={handleSubmit}
         sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 2, maxWidth: 400, mx: 'auto' }}>
 
@@ -141,7 +195,6 @@ const LibroMayor = () => {
         </Button>
       </Box>
 
-      {/* Botones de exportación */}
       <Box sx={{ mb: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
         <Button onClick={exportToExcel} variant="contained"
           sx={{ backgroundColor: dorado, color: negro, fontWeight: 'bold', '&:hover': { backgroundColor: '#b38b18' } }}>
@@ -153,7 +206,6 @@ const LibroMayor = () => {
         </Button>
       </Box>
 
-      {/* Visualización por cuenta */}
       {libroMayor.map((cuenta) => (
         <Box key={cuenta.cuentaId} sx={{ mb: 5 }}>
           <Typography variant="h6" sx={{ color: dorado, mb: 1 }}>
@@ -168,6 +220,15 @@ const LibroMayor = () => {
               </TableRow>
             </TableHead>
             <TableBody>
+              {/* Saldo inicial */}
+              <TableRow sx={{ backgroundColor: '#333' }}>
+                <TableCell sx={{ color: blanco, fontStyle: 'italic' }}>-- Saldo Inicial --</TableCell>
+                <TableCell sx={{ color: blanco }}>-</TableCell>
+                <TableCell sx={{ color: blanco }}>-</TableCell>
+                <TableCell sx={{ color: blanco }}>{formatter.format(cuenta.saldoInicial)}</TableCell>
+              </TableRow>
+
+              {/* Movimientos */}
               {cuenta.movimientos.map((mov, i) => (
                 <TableRow key={i}
                   sx={{ '&:nth-of-type(odd)': { backgroundColor: grisOscuro }, '&:hover': { backgroundColor: '#3e3e3e' } }}>

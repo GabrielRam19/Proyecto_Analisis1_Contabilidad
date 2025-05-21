@@ -33,6 +33,12 @@ const PeriodoList = () => {
       .catch(error => console.error(error));
   };
 
+  // Función para obtener la descripción del periodo anterior dado su ID
+  const obtenerDescripcionPeriodoAnterior = (idAnterior) => {
+    const periodoAnterior = periodos.find(p => p.id_periodo === idAnterior);
+    return periodoAnterior ? periodoAnterior.descripcion : '-';
+  };
+
   return (
     <Box
       sx={{
@@ -74,7 +80,7 @@ const PeriodoList = () => {
         <Table>
           <TableHead>
             <TableRow>
-              {['Fecha Inicio', 'Fecha Fin', 'Descripción', 'Cerrado', 'Acciones'].map((headCell) => (
+              {['Fecha Inicio', 'Fecha Fin', 'Descripción', 'Cerrado', 'Periodo Anterior', 'Acciones'].map((headCell) => (
                 <TableCell
                   key={headCell}
                   sx={{ color: '#FFD700', fontWeight: 'bold', borderBottom: '1px solid #444' }}
@@ -98,23 +104,28 @@ const PeriodoList = () => {
                 <TableCell sx={{ color: '#fff' }}>{periodo.fecha_fin}</TableCell>
                 <TableCell sx={{ color: '#fff' }}>{periodo.descripcion}</TableCell>
                 <TableCell sx={{ color: '#fff' }}>{periodo.estado ? 'Sí' : 'No'}</TableCell>
+                <TableCell sx={{ color: '#fff' }}>
+                  {periodo.id_periodo_anterior
+                    ? obtenerDescripcionPeriodoAnterior(periodo.id_periodo_anterior)
+                    : '-'}
+                </TableCell>
                 <TableCell>
-  <IconButton
-    component={Link}
-    to={`/asientos/${periodo.id_periodo}`}
-    sx={{ color: '#FFD700' }}
-    aria-label="editar"
-  >
-    <Edit />
-  </IconButton>
-  <IconButton
-    onClick={() => handleDelete(periodo.id_periodo)}
-    sx={{ color: '#ff5555' }}
-    aria-label="eliminar"
-  >
-    <Delete />
-  </IconButton>
-</TableCell>
+                  <IconButton
+                    component={Link}
+                    to={`/periodos/${periodo.id_periodo}`}
+                    sx={{ color: '#FFD700' }}
+                    aria-label="editar"
+                  >
+                    <Edit />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => handleDelete(periodo.id_periodo)}
+                    sx={{ color: '#ff5555' }}
+                    aria-label="eliminar"
+                  >
+                    <Delete />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

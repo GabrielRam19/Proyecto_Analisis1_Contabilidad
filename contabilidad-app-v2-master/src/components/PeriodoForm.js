@@ -9,12 +9,16 @@ const PeriodoForm = () => {
     fecha_fin: '',
     descripcion: '',
     estado: false,
+    id_periodo_anterior: ''
   });
+
+  const [periodosCerrados, setPeriodosCerrados] = useState([]);
 
   const params = useParams();
   const navigate = useNavigate();
   const id_periodo = params.id;
 
+  // Obtener periodo actual si estamos en modo edición
   useEffect(() => {
     if (id_periodo) {
       axios
@@ -24,36 +28,82 @@ const PeriodoForm = () => {
     }
   }, [id_periodo]);
 
-  const handleChange = (event) => {
-  const { name, value, type, checked } = event.target;
-
-  let newValue = value;
-  if (name === 'estado') {
-    newValue = value === 'true'; // convierte string a boolean
-  } else if (type === 'checkbox') {
-    newValue = checked;
-  }
-
-  setPeriodo((prev) => ({
-    ...prev,
-    [name]: newValue,
-  }));
-};
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (id_periodo) {
+  // Obtener lista de periodos cerrados si el estado actual es true
+  useEffect(() => {
+    if (periodo.estado === true || periodo.estado === 'true') {
       axios
-        .put(`http://localhost:5000/api/PERIODOS/${id_periodo}`, periodo)
-        .then(() => navigate('/periodos'))
-        .catch((error) => console.error(error));
-    } else {
-      axios
-        .post('http://localhost:5000/api/PERIODOS', periodo)
-        .then(() => navigate('/periodos'))
+        .get('http://localhost:5000/api/periodos?cerrado=true')
+        .then((response) => setPeriodosCerrados(response.data))
         .catch((error) => console.error(error));
     }
+  }, [periodo.estado]);
+
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+
+    let newValue = value;
+    if (name === 'estado') {
+      newValue = value === 'true'; // convierte string a boolean
+    } else if (type === 'checkbox') {
+      newValue = checked;
+    }
+
+    setPeriodo((prev) => ({
+      ...prev,
+      [name]: newValue,
+    }));
   };
+
+  const handleSubmit = (event) => {
+  event.preventDefault();
+
+  const fechaInicioActual = new Date(periodo.fecha_inicio);
+
+  // Validación: No se puede seleccionar el mismo periodo como anterior
+  if (
+    periodo.id_periodo_anterior &&
+    id_periodo &&
+    parseInt(periodo.id_periodo_anterior) === parseInt(id_periodo)
+  ) {
+    alert('No puedes seleccionar el mismo periodo como periodo anterior.');
+    return;
+  }
+
+  // Validación: el periodo anterior no puede tener fecha mayor o igual al actual
+  if (periodo.id_periodo_anterior) {
+    const periodoAnterior = periodosCerrados.find(
+      (p) => parseInt(p.id_periodo) === parseInt(periodo.id_periodo_anterior)
+    );
+
+    if (periodoAnterior) {
+      const fechaInicioAnterior = new Date(periodoAnterior.fecha_inicio);
+      const fechaFinAnterior = new Date(periodoAnterior.fecha_fin);
+
+      if (
+        fechaInicioAnterior >= fechaInicioActual ||
+        fechaFinAnterior >= fechaInicioActual
+      ) {
+        alert(
+          'El periodo anterior no puede tener una fecha de inicio o fin mayor o igual al periodo actual.'
+        );
+        return;
+      }
+    }
+  }
+
+  // Si pasa las validaciones, envía los datos
+  if (id_periodo) {
+    axios
+      .put(`http://localhost:5000/api/PERIODOS/${id_periodo}`, periodo)
+      .then(() => navigate('/periodos'))
+      .catch((error) => console.error(error));
+  } else {
+    axios
+      .post('http://localhost:5000/api/PERIODOS', periodo)
+      .then(() => navigate('/periodos'))
+      .catch((error) => console.error(error));
+  }
+};
 
   return (
     <Box
@@ -163,55 +213,111 @@ const PeriodoForm = () => {
       />
 
       <TextField
-  label="Cerrado"
-  name="estado" // <--- Este era "cerrado", debe coincidir con el nombre del campo en el estado
-  select
-  value={String(periodo.estado)} // convertir a string para que se pueda seleccionar
-  onChange={handleChange}
-  fullWidth
-  margin="normal"
-  InputLabelProps={{ sx: { color: '#FFD700' } }}
-  sx={{
-    color: '#fff', // texto seleccionado blanco
-    '& .MuiSelect-select': {
-      color: '#fff', // texto seleccionado blanco
-      backgroundColor: '#222',
-      padding: '10px',
-      borderRadius: 1,
-    },
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: '#555',
-      },
-      '&:hover fieldset': {
-        borderColor: '#FFD700',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#FFD700',
-      },
-    },
-  }}
-  MenuProps={{
-    PaperProps: {
-      sx: {
-        bgcolor: '#222',
-        color: '#FFD700',
-        '& .MuiMenuItem-root:hover': {
-          backgroundColor: '#444',
-        },
-        '&.Mui-selected': {
-          backgroundColor: '#555',
-          '&:hover': {
-            backgroundColor: '#666',
+        label="Cerrado"
+        name="estado"
+        select
+        value={String(periodo.estado)}
+        onChange={handleChange}
+        fullWidth
+        margin="normal"
+        InputLabelProps={{ sx: { color: '#FFD700' } }}
+        sx={{
+          color: '#fff',
+          '& .MuiSelect-select': {
+            color: '#fff',
+            backgroundColor: '#222',
+            padding: '10px',
+            borderRadius: 1,
           },
-        },
-      },
-    },
-  }}
->
-  <MenuItem value="false">No</MenuItem>
-  <MenuItem value="true">Sí</MenuItem>
-</TextField>
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              borderColor: '#555',
+            },
+            '&:hover fieldset': {
+              borderColor: '#FFD700',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#FFD700',
+            },
+          },
+        }}
+        MenuProps={{
+          PaperProps: {
+            sx: {
+              bgcolor: '#222',
+              color: '#FFD700',
+              '& .MuiMenuItem-root:hover': {
+                backgroundColor: '#444',
+              },
+              '&.Mui-selected': {
+                backgroundColor: '#555',
+                '&:hover': {
+                  backgroundColor: '#666',
+                },
+              },
+            },
+          },
+        }}
+      >
+        <MenuItem value="false">No</MenuItem>
+        <MenuItem value="true">Sí</MenuItem>
+      </TextField>
+
+      {periodo.estado === true || periodo.estado === 'true' ? (
+        <TextField
+          label="Periodo Anterior Cerrado"
+          name="id_periodo_anterior"
+          select
+          value={periodo.id_periodo_anterior || ''}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          InputLabelProps={{ sx: { color: '#FFD700' } }}
+          sx={{
+            color: '#fff',
+            '& .MuiSelect-select': {
+              color: '#fff',
+              backgroundColor: '#222',
+              padding: '10px',
+              borderRadius: 1,
+            },
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: '#555',
+              },
+              '&:hover fieldset': {
+                borderColor: '#FFD700',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#FFD700',
+              },
+            },
+          }}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                bgcolor: '#222',
+                color: '#FFD700',
+                '& .MuiMenuItem-root:hover': {
+                  backgroundColor: '#444',
+                },
+                '&.Mui-selected': {
+                  backgroundColor: '#555',
+                  '&:hover': {
+                    backgroundColor: '#666',
+                  },
+                },
+              },
+            },
+          }}
+        >
+          {periodosCerrados.map((p) => (
+            <MenuItem key={p.id_periodo} value={p.id_periodo}>
+              {p.descripcion} ({p.fecha_inicio} a {p.fecha_fin})
+            </MenuItem>
+          ))}
+        </TextField>
+      ) : null}
 
       <Button
         type="submit"

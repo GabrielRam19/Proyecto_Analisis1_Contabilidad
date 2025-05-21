@@ -7,8 +7,11 @@
         public string Nombre { get; set; }
         public decimal TOTAL_DEBE { get; set; }
         public decimal TOTAL_HABER { get; set; }
+        public decimal SaldoInicial { get; set; }
         public decimal Saldo { get; set; }
-        public string Tipo { get; set; }
+        public string Tipo { get; set; } // Activo, Pasivo, Capital
+        public string TipoSaldo { get; set; } // "Deudor" o "Acreedor"
     }
+
 
 }

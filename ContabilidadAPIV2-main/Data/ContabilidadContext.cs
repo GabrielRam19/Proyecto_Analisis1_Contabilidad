@@ -14,6 +14,7 @@ namespace ContabilidadAPIV2.Controllers
         public DbSet<DETALLE_ASIENTO> DETALLE_ASIENTO { get; set; }
         public DbSet<JERARQUIA> JERARQUIA { get; set; }
         public DbSet<PERIODO> PERIODO { get; set; }
+        public DbSet<SALDOCUENTAPERIODO> SALDOCUENTAPERIODO { get; set; }
 
         // Agregar DbSet para las vistas
         public DbSet<LibroMayor> LibroMayor { get; set; }
@@ -28,7 +29,10 @@ namespace ContabilidadAPIV2.Controllers
             // Configuracion de dtos
             modelBuilder.Entity<LibroMayorMovimientoDto>().HasNoKey();
             modelBuilder.Entity<BalanceSaldosDto>().HasNoKey();
+            modelBuilder.Entity<BalanceSaldosParcialDto>().HasNoKey();
+            modelBuilder.Entity<LibroMayorMovimientoRawDto>().HasNoKey();
             modelBuilder.Entity<EstadoResultadosDto>().HasNoKey();
+            modelBuilder.Entity<BalanceGeneralMovimientoParcialDto>().HasNoKey();
 
             // Configurar las vistas como entidades de solo lectura
             modelBuilder.Entity<LibroMayor>().ToView("Libro_Mayor").HasKey(e => new { e.CUENTA_ID, e.Fecha });

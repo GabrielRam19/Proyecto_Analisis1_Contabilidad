@@ -16,4 +16,6 @@ public class BalanceSaldosDto
     public decimal Total_Debe { get; set; }
     public decimal Total_Haber { get; set; }
     public decimal Saldo_Final { get; set; }
+    public string? CodigoCuentaPadre { get; set; }
+    public int? NivelJerarquia { get; set; }
 }

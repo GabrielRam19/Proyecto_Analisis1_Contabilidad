@@ -40,6 +40,8 @@ const BalanceGeneral = () => {
     const exportToExcel = () => {
         const data = balanceGeneral.map(row => ({
             Código: row.codigo,
+            "Código Padre": row.codigoCuentaPadre ? `${row.codigoCuentaPadre} - Nivel ${row.nivelJerarquia}` : '',
+            Nivel: row.nivelJerarquia,
             Nombre: row.nombre,
             "Saldo Inicial": row.saldoInicial,
             "Debe": row.totaL_DEBE,
@@ -57,9 +59,11 @@ const BalanceGeneral = () => {
         doc.setTextColor("#D4AF37");
         doc.text("Balance General", 20, 10);
         doc.autoTable({
-            head: [['Código', 'Nombre', 'Saldo Inicial', 'Debe', 'Haber', 'Saldo Final']],
+            head: [['Código', 'Código Padre', 'Nivel', 'Nombre', 'Saldo Inicial', 'Debe', 'Haber', 'Saldo Final']],
             body: balanceGeneral.map(row => [
                 row.codigo,
+                row.codigoCuentaPadre ? `${row.codigoCuentaPadre} - Nivel ${row.nivelJerarquia}` : '',
+                row.nivelJerarquia,
                 row.nombre,
                 row.saldoInicial.toFixed(2),
                 row.totaL_DEBE.toFixed(2),
@@ -70,6 +74,25 @@ const BalanceGeneral = () => {
             headStyles: { fillColor: [32, 32, 32], textColor: [212, 175, 55] },
         });
         doc.save("BalanceGeneral.pdf");
+    };
+
+    const buildTree = (list) => {
+        const map = {};
+        const roots = [];
+
+        list.forEach(item => {
+            map[item.codigo] = { ...item, hijos: [] };
+        });
+
+        list.forEach(item => {
+            if (item.codigoCuentaPadre && map[item.codigoCuentaPadre]) {
+                map[item.codigoCuentaPadre].hijos.push(map[item.codigo]);
+            } else {
+                roots.push(map[item.codigo]);
+            }
+        });
+
+        return roots;
     };
 
     const formatter = new Intl.NumberFormat('es-MX', {
@@ -85,43 +108,58 @@ const BalanceGeneral = () => {
     const getTotal = (arr) => arr.reduce((sum, r) => sum + (r.saldo || 0), 0);
     const totalActivos = getTotal(activos);
     const totalPasivoCapital = getTotal([...pasivos, ...capitales]);
-    const diferencia = totalActivos + totalPasivoCapital;
+    const diferencia = totalActivos - totalPasivoCapital;
 
-    const renderSeccion = (titulo, cuentas) => (
-        <Grid item xs={12} md={6}>
-            <Typography variant="h6" sx={{ color: '#D4AF37', mb: 1 }}>{titulo}</Typography>
-            <Table size="small">
-                <TableHead>
-                    <TableRow>
-                        <TableCell sx={{ color: '#D4AF37' }}>Código</TableCell>
-                        <TableCell sx={{ color: '#D4AF37' }}>Nombre</TableCell>
-                        <TableCell sx={{ color: '#D4AF37' }}>Saldo Inicial</TableCell>
-                        <TableCell sx={{ color: '#D4AF37' }}>Debe</TableCell>
-                        <TableCell sx={{ color: '#D4AF37' }}>Haber</TableCell>
-                        <TableCell sx={{ color: '#D4AF37' }}>Saldo Final</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {cuentas.map((row, i) => (
-                        <TableRow key={i}>
-                            <TableCell sx={{ color: '#fff' }}>{row.codigo}</TableCell>
-                            <TableCell sx={{ color: '#fff' }}>{row.nombre}</TableCell>
-                            <TableCell sx={{ color: '#fff' }}>{formatter.format(row.saldoInicial)}</TableCell>
-                            <TableCell sx={{ color: '#fff' }}>{formatter.format(row.totaL_DEBE)}</TableCell>
-                            <TableCell sx={{ color: '#fff' }}>{formatter.format(row.totaL_HABER)}</TableCell>
-                            <TableCell sx={{ color: '#fff' }}>{formatter.format(row.saldo)}</TableCell>
-                        </TableRow>
-                    ))}
-                    <TableRow>
-                        <TableCell colSpan={5} sx={{ color: '#D4AF37', fontWeight: 'bold' }}>Total {titulo}</TableCell>
-                        <TableCell sx={{ color: '#D4AF37', fontWeight: 'bold' }}>
-                            {formatter.format(getTotal(cuentas))}
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
-        </Grid>
+    const renderRow = (row) => (
+        <React.Fragment key={row.codigo}>
+            <TableRow>
+                <TableCell sx={{ color: '#fff' }}>{row.codigo}</TableCell>
+                <TableCell sx={{ color: '#fff' }}>
+                    {row.codigoCuentaPadre ? `${row.codigoCuentaPadre}` : ''}
+                </TableCell>
+                <TableCell sx={{ color: '#fff' }}>{row.nivelJerarquia}</TableCell>
+                <TableCell sx={{ color: '#fff' }}>{row.nombre}</TableCell>
+                <TableCell sx={{ color: '#fff' }}>{formatter.format(row.saldoInicial)}</TableCell>
+                <TableCell sx={{ color: '#fff' }}>{formatter.format(row.totaL_DEBE)}</TableCell>
+                <TableCell sx={{ color: '#fff' }}>{formatter.format(row.totaL_HABER)}</TableCell>
+                <TableCell sx={{ color: '#fff' }}>{formatter.format(row.saldo)}</TableCell>
+            </TableRow>
+            {row.hijos && row.hijos.map(hijo => renderRow(hijo))}
+        </React.Fragment>
     );
+
+    const renderSeccion = (titulo, cuentas) => {
+        const arbolCuentas = buildTree(cuentas);
+
+        return (
+            <Grid item xs={12} md={6}>
+                <Typography variant="h6" sx={{ color: '#D4AF37', mb: 1 }}>{titulo}</Typography>
+                <Table size="small">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell sx={{ color: '#D4AF37' }}>Código</TableCell>
+                            <TableCell sx={{ color: '#D4AF37' }}>Código Padre</TableCell>
+                            <TableCell sx={{ color: '#D4AF37' }}>Nivel</TableCell>
+                            <TableCell sx={{ color: '#D4AF37' }}>Nombre</TableCell>
+                            <TableCell sx={{ color: '#D4AF37' }}>Saldo Inicial</TableCell>
+                            <TableCell sx={{ color: '#D4AF37' }}>Debe</TableCell>
+                            <TableCell sx={{ color: '#D4AF37' }}>Haber</TableCell>
+                            <TableCell sx={{ color: '#D4AF37' }}>Saldo Final</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {arbolCuentas.map(row => renderRow(row))}
+                        <TableRow>
+                            <TableCell colSpan={7} sx={{ color: '#D4AF37', fontWeight: 'bold' }}>Total {titulo}</TableCell>
+                            <TableCell sx={{ color: '#D4AF37', fontWeight: 'bold' }}>
+                                {formatter.format(getTotal(cuentas))}
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </Grid>
+        );
+    };
 
     return (
         <TableContainer
@@ -201,7 +239,7 @@ const BalanceGeneral = () => {
                             </Typography>
                             <Typography variant="body2" sx={{ color: '#fff', mt: 1 }}>
                                 {
-                                    totalActivos > -totalPasivoCapital
+                                    totalActivos > totalPasivoCapital
                                         ? '🔍 El total de activos es mayor que el total de pasivo y capital.'
                                         : '🔍 El total de pasivo y capital es mayor que el total de activos.'
                                 }

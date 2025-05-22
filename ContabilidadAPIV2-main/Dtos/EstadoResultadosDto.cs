@@ -6,4 +6,6 @@ public class EstadoResultadosDto
     public decimal Total_Debe { get; set; }
     public decimal Total_Haber { get; set; }
     public decimal Resultado { get; set; }
+    public string? codigoCuentaPadre { get; set; }
+    public int? nivelJerarquia { get; set; }
 }

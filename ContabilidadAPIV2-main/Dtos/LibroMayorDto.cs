@@ -32,4 +32,6 @@ public class LibroMayorAgrupado
     public string Nombre { get; set; }
     public decimal SaldoInicial { get; set; }
     public List<LibroMayorMovimientoDto> Movimientos { get; set; }
+    public string CodigoCuentaPadre { get; set; }
+    public int? NivelJerarquia { get; set; }
 }

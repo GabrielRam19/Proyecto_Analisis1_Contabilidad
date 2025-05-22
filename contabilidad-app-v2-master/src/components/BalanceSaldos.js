@@ -21,25 +21,23 @@ const BalanceSaldos = () => {
   }, []);
 
   const handlePeriodoChange = (event) => {
-  setPeriodoSeleccionado(event.target.value);
-};
+    setPeriodoSeleccionado(event.target.value);
+  };
 
   const handleSubmit = (event) => {
-  event.preventDefault();
-
-  axios.post('http://localhost:5000/api/libroscontables/BalanceSaldos', {
-    id_periodo: periodoSeleccionado
-  })
-    .then(response => setBalanceSaldos(response.data))
-    .catch(error => console.error(error));
-};
+    event.preventDefault();
+    axios.post('http://localhost:5000/api/libroscontables/BalanceSaldos', {
+      id_periodo: periodoSeleccionado
+    })
+      .then(response => setBalanceSaldos(response.data))
+      .catch(error => console.error(error));
+  };
 
   const exportToExcel = () => {
     const dataWithNature = balanceSaldos.map(row => ({
-        ...row,
-        naturaleza: (row.saldo_Final || 0) >= 0 ? 'Deudor' : 'Acreedor'
+      ...row,
+      naturaleza: (row.saldo_Final || 0) >= 0 ? 'Deudor' : 'Acreedor'
     }));
-
     const worksheet = XLSX.utils.json_to_sheet(dataWithNature);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "BalanceSaldos");
@@ -50,17 +48,18 @@ const BalanceSaldos = () => {
     const doc = new jsPDF();
     doc.text("Balance de Saldos", 20, 10);
     doc.autoTable({
-        head: [['CuentaId', 'Código', 'Nombre', 'Saldo inicial', 'Total Debe', 'Total Haber', 'Saldo final', 'Naturaleza']],
-        body: balanceSaldos.map(row => [
-            row.cuenta_Id,
-            row.codigo,
-            row.nombre,
-            row.saldo_Inicial,
-            row.total_Debe,
-            row.total_Haber,
-            row.saldo_Final,
-            (row.saldo_Final || 0) >= 0 ? 'Deudor' : 'Acreedor'
-        ])
+      head: [['Código', 'Cuenta Padre', 'Nivel', 'Nombre', 'Saldo inicial', 'Debe', 'Haber', 'Saldo final', 'Naturaleza']],
+      body: balanceSaldos.map(row => [
+        row.codigo,
+        row.codigoCuentaPadre || '-',
+        row.nivelJerarquia,
+        row.nombre,
+        row.saldo_Inicial,
+        row.total_Debe,
+        row.total_Haber,
+        row.saldo_Final,
+        (row.saldo_Final || 0) >= 0 ? 'Deudor' : 'Acreedor'
+      ])
     });
     doc.save("BalanceSaldos.pdf");
   };
@@ -70,6 +69,40 @@ const BalanceSaldos = () => {
     currency: 'GTQ',
     minimumFractionDigits: 0
   });
+
+  // Construir el árbol padre-hijo
+  const buildTree = (flatData) => {
+    const map = {};
+    const roots = [];
+
+    flatData.forEach(item => {
+      map[item.codigo] = { ...item, children: [] };
+    });
+
+    flatData.forEach(item => {
+      if (item.codigoCuentaPadre && map[item.codigoCuentaPadre]) {
+        map[item.codigoCuentaPadre].children.push(map[item.codigo]);
+      } else {
+        roots.push(map[item.codigo]);
+      }
+    });
+
+    return roots;
+  };
+
+  // Aplanar el árbol en orden jerárquico con indentación
+  const flattenTree = (nodes, depth = 0) => {
+    let result = [];
+    nodes.forEach(node => {
+      result.push({ ...node, indentLevel: depth });
+      if (node.children && node.children.length > 0) {
+        result = result.concat(flattenTree(node.children, depth + 1));
+      }
+    });
+    return result;
+  };
+
+  const treeData = flattenTree(buildTree(balanceSaldos));
 
   return (
     <TableContainer component={Paper} sx={{
@@ -100,10 +133,10 @@ const BalanceSaldos = () => {
             }}
           >
             {periodos.map(p => (
-                          <MenuItem key={p.id_periodo} value={p.id_periodo}>
-                            {`${p.descripcion} (${new Date(p.fecha_inicio).toLocaleDateString()} - ${new Date(p.fecha_fin).toLocaleDateString()})`}
-                          </MenuItem>
-                        ))}
+              <MenuItem key={p.id_periodo} value={p.id_periodo}>
+                {`${p.descripcion} (${new Date(p.fecha_inicio).toLocaleDateString()} - ${new Date(p.fecha_fin).toLocaleDateString()})`}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 
@@ -140,45 +173,46 @@ const BalanceSaldos = () => {
       <Table sx={{ bgcolor: '#1E1E1E', borderRadius: 2 }} stickyHeader>
         <TableHead>
           <TableRow>
-            {['Cuenta Id', 'Código', 'Nombre', 'Saldo inicial', 'Total Debe', 'Total Haber', 'Saldo final', 'Naturaleza'].map((headCell) => (
-                <TableCell
-                    key={headCell}
-                    sx={{
-                    backgroundColor: '#2e2e2e',
-                    color: '#FFD700',
-                    fontWeight: 'bold',
-                    borderBottom: '1px solid #444',
-                    }}
-                >
-                    {headCell}
-                </TableCell>
-                ))}
+            {['Código', 'Cuenta Padre', 'Nivel', 'Nombre', 'Saldo inicial', 'Debe', 'Haber', 'Saldo final', 'Naturaleza'].map((headCell) => (
+              <TableCell
+                key={headCell}
+                sx={{
+                  backgroundColor: '#2e2e2e',
+                  color: '#FFD700',
+                  fontWeight: 'bold',
+                  borderBottom: '1px solid #444',
+                }}
+              >
+                {headCell}
+              </TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {balanceSaldos.length === 0 ? (
+          {treeData.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} align="center" sx={{ color: '#aaa', fontStyle: 'italic' }}>
+              <TableCell colSpan={9} align="center" sx={{ color: '#aaa', fontStyle: 'italic' }}>
                 No hay datos disponibles.
               </TableCell>
             </TableRow>
           ) : (
-            balanceSaldos.map((row, index) => (
+            treeData.map((row, index) => (
               <TableRow
                 key={index}
-                sx={{
-                  '&:hover': { backgroundColor: 'rgba(255, 215, 0, 0.1)' },
-                }}
+                sx={{ '&:hover': { backgroundColor: 'rgba(255, 215, 0, 0.1)' } }}
               >
-                <TableCell sx={{ color: '#fff' }}>{row.cuenta_Id}</TableCell>
                 <TableCell sx={{ color: '#fff' }}>{row.codigo}</TableCell>
-                <TableCell sx={{ color: '#ddd' }}>{row.nombre}</TableCell>
+                <TableCell sx={{ color: '#aaa' }}>{row.codigoCuentaPadre || '-'}</TableCell>
+                <TableCell sx={{ color: '#aaa' }}>{row.nivelJerarquia}</TableCell>
+                <TableCell sx={{ color: '#ddd', pl: `${row.indentLevel * 2}px` }}>
+                  {row.nombre}
+                </TableCell>
                 <TableCell sx={{ color: '#fff' }}>{formatter.format(row.saldo_Inicial)}</TableCell>
                 <TableCell sx={{ color: '#fff' }}>{formatter.format(row.total_Debe)}</TableCell>
                 <TableCell sx={{ color: '#fff' }}>{formatter.format(row.total_Haber)}</TableCell>
                 <TableCell sx={{ color: '#fff' }}>{formatter.format(row.saldo_Final)}</TableCell>
                 <TableCell sx={{ color: '#fff' }}>
-                    {(row.saldo_Final || 0) >= 0 ? 'Deudor' : 'Acreedor'}
+                  {(row.saldo_Final || 0) >= 0 ? 'Deudor' : 'Acreedor'}
                 </TableCell>
               </TableRow>
             ))

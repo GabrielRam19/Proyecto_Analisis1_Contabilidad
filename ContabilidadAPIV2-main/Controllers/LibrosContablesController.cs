@@ -99,6 +99,10 @@ ORDER BY
                     new SqlParameter("@FechaFin", periodo.fecha_fin.ToDateTime(TimeOnly.MinValue)))
                 .ToListAsync();
 
+            // Cargar jerarquías
+            var jerarquias = await _context.JERARQUIA
+                .ToDictionaryAsync(j => j.codigo_cuenta_hijo, j => new { j.codigo_cuenta_padre, j.nivel });
+
             // Agrupar por cuenta
             var agrupado = movimientosRaw
     .GroupBy(m => new { m.Cuenta_Id, m.Codigo, m.Nombre })
@@ -125,13 +129,18 @@ ORDER BY
             };
         }).ToList();
 
+        // Buscar jerarquía
+        jerarquias.TryGetValue(g.Key.Codigo, out var jerarquiaInfo);
+
         return new LibroMayorAgrupado
         {
             CuentaId = g.Key.Cuenta_Id,
             Codigo = g.Key.Codigo,
             Nombre = g.Key.Nombre,
             SaldoInicial = saldoInicial,
-            Movimientos = movimientosConSaldo
+            Movimientos = movimientosConSaldo,
+            CodigoCuentaPadre = jerarquiaInfo?.codigo_cuenta_padre,
+            NivelJerarquia = jerarquiaInfo?.nivel
         };
     })
     .ToList();
@@ -175,26 +184,33 @@ ORDER BY c.codigo";
                     new SqlParameter("@FechaInicio", periodo.fecha_inicio),
                     new SqlParameter("@FechaFin", periodo.fecha_fin))
                 .ToListAsync();
+            // Obtener jerarquía para cada cuenta
+            var jerarquias = await _context.JERARQUIA.ToListAsync();
+            var jerarquiaDict = jerarquias.ToDictionary(j => j.codigo_cuenta_hijo);
 
             // Combinar con saldos iniciales
             var resultado = movimientosPeriodo
-                .Select(m =>
-                {
-                    var saldoInicial = saldosIniciales.TryGetValue(m.Cuenta_Id, out var s) ? s : 0;
-                    var saldoFinal = saldoInicial + (m.Total_Debe - m.Total_Haber);
+    .Select(m =>
+    {
+        var saldoInicial = saldosIniciales.TryGetValue(m.Cuenta_Id, out var s) ? s : 0;
+        var saldoFinal = saldoInicial + (m.Total_Debe - m.Total_Haber);
 
-                    return new BalanceSaldosDto
-                    {
-                        Cuenta_Id = m.Cuenta_Id,
-                        Codigo = m.Codigo,
-                        Nombre = m.Nombre,
-                        Saldo_Inicial = saldoInicial,
-                        Total_Debe = m.Total_Debe,
-                        Total_Haber = m.Total_Haber,
-                        Saldo_Final = saldoFinal
-                    };
-                })
-                .ToList();
+        jerarquiaDict.TryGetValue(m.Codigo, out var jerarquia);
+
+        return new BalanceSaldosDto
+        {
+            Cuenta_Id = m.Cuenta_Id,
+            Codigo = m.Codigo,
+            Nombre = m.Nombre,
+            Saldo_Inicial = saldoInicial,
+            Total_Debe = m.Total_Debe,
+            Total_Haber = m.Total_Haber,
+            Saldo_Final = saldoFinal,
+            CodigoCuentaPadre = jerarquia?.codigo_cuenta_padre,
+            NivelJerarquia = jerarquia?.nivel
+        };
+    })
+    .ToList();
 
             return Ok(resultado);
         }
@@ -204,26 +220,30 @@ ORDER BY c.codigo";
         public async Task<ActionResult<IEnumerable<EstadoResultadosDto>>> GetEstadoResultados(RequestConsultaLibros requestConsulta)
         {
             var query = @"
-                SELECT 
-                    c.cuenta_id,
-                    c.codigo,
-                    c.nombre,
-                    SUM(d.debe) AS total_debe,
-                    SUM(d.haber) AS total_haber,
-                    SUM(d.haber - d.debe) AS resultado
-                FROM 
-                    Detalle_Asiento d
-                JOIN 
-                    Cuentas c ON d.cuenta_id = c.cuenta_id
-                JOIN 
-                    Asientos a ON d.asiento_id = a.asiento_id
-                WHERE 
-                    c.tipo IN ('Ingreso', 'Gasto') AND
-                    a.id_periodo = @IdPeriodo
-                GROUP BY 
-                    c.cuenta_id, c.codigo, c.nombre
-                ORDER BY 
-                    c.codigo";
+        SELECT 
+            c.cuenta_id,
+            c.codigo,
+            c.nombre,
+            SUM(d.debe) AS total_debe,
+            SUM(d.haber) AS total_haber,
+            SUM(d.haber - d.debe) AS resultado,
+            j.codigo_cuenta_padre AS codigoCuentaPadre,
+            j.nivel AS nivelJerarquia
+        FROM 
+            Detalle_Asiento d
+        JOIN 
+            Cuentas c ON d.cuenta_id = c.cuenta_id
+        JOIN 
+            Asientos a ON d.asiento_id = a.asiento_id
+        LEFT JOIN 
+            JERARQUIA j ON c.codigo = j.codigo_cuenta_hijo
+        WHERE 
+            c.tipo IN ('Ingreso', 'Gasto') AND
+            a.id_periodo = @IdPeriodo
+        GROUP BY 
+            c.cuenta_id, c.codigo, c.nombre, j.codigo_cuenta_padre, j.nivel
+        ORDER BY 
+            c.codigo";
 
             var resultado = await _context.Set<EstadoResultadosDto>()
                 .FromSqlRaw(query, new SqlParameter("@IdPeriodo", requestConsulta.id_periodo))
@@ -235,14 +255,12 @@ ORDER BY c.codigo";
         [HttpPost("BalanceGeneral")]
         public async Task<ActionResult<IEnumerable<BalanceGeneral>>> GetBalanceGeneral(RequestConsultaLibros requestConsulta)
         {
-            // Obtener periodo
             var periodo = await _context.PERIODO
                 .FirstOrDefaultAsync(p => p.id_periodo == requestConsulta.id_periodo);
 
             if (periodo == null)
                 return NotFound("Periodo no encontrado");
 
-            // Obtener saldos iniciales del periodo para cuentas relevantes
             var saldosIniciales = await _context.SALDOCUENTAPERIODO
                 .Where(s => s.id_periodo == requestConsulta.id_periodo)
                 .Join(_context.CUENTAS,
@@ -252,36 +270,50 @@ ORDER BY c.codigo";
                 .Where(x => x.TIPO == "Activo" || x.TIPO == "Pasivo" || x.TIPO == "Capital")
                 .ToListAsync();
 
-            // Obtener movimientos del periodo actual (debe/haber)
             var query = @"
-        SELECT 
-            c.cuenta_id,
-            SUM(d.debe) AS total_debe,
-            SUM(d.haber) AS total_haber
-        FROM 
-            Detalle_Asiento d
-        JOIN 
-            Asientos a ON d.asiento_id = a.asiento_id
-        JOIN 
-            Cuentas c ON d.cuenta_id = c.cuenta_id
-        WHERE 
-            c.tipo IN ('Activo', 'Pasivo', 'Capital') AND
-            a.id_periodo = @PeriodoId
-        GROUP BY 
-            c.cuenta_id";
+SELECT 
+    c.cuenta_id,
+    SUM(d.debe) AS total_debe,
+    SUM(d.haber) AS total_haber
+FROM 
+    Detalle_Asiento d
+JOIN 
+    Asientos a ON d.asiento_id = a.asiento_id
+JOIN 
+    Cuentas c ON d.cuenta_id = c.cuenta_id
+WHERE 
+    c.tipo IN ('Activo', 'Pasivo', 'Capital') AND
+    a.id_periodo = @PeriodoId
+GROUP BY 
+    c.cuenta_id";
 
             var movimientos = await _context.Set<BalanceGeneralMovimientoParcialDto>()
                 .FromSqlRaw(query, new SqlParameter("@PeriodoId", requestConsulta.id_periodo))
                 .ToListAsync();
 
-            // Combinar saldos iniciales con movimientos
-            var resultado = saldosIniciales.Select(s =>
+            var jerarquias = await _context.JERARQUIA.ToListAsync();
+
+            var nivelesPorCodigo = jerarquias
+                .GroupBy(j => j.codigo_cuenta_hijo)
+                .ToDictionary(g => g.Key, g => g.Max(j => j.nivel));
+
+            var padresPorCodigo = jerarquias
+                .GroupBy(j => j.codigo_cuenta_hijo)
+                .ToDictionary(g => g.Key, g => g.First().codigo_cuenta_padre);
+
+            var resultadoPlano = saldosIniciales.Select(s =>
             {
                 var movimiento = movimientos.FirstOrDefault(m => m.Cuenta_Id == s.CUENTA_ID);
                 var debe = movimiento?.Total_Debe ?? 0;
                 var haber = movimiento?.Total_Haber ?? 0;
-                var saldo = s.saldo_inicial + (debe - haber);
+                var saldoBruto = s.saldo_inicial + (debe - haber);
+
+                // Para activos y pasivos el saldo siempre es positivo
+                var saldo = (s.TIPO == "Activo" || s.TIPO == "Pasivo") ? Math.Abs(saldoBruto) : saldoBruto;
                 var tipoSaldo = saldo >= 0 ? "Deudor" : "Acreedor";
+
+                nivelesPorCodigo.TryGetValue(s.CODIGO, out int nivelJerarquia);
+                padresPorCodigo.TryGetValue(s.CODIGO, out string codigoPadre);
 
                 return new BalanceGeneral
                 {
@@ -293,12 +325,15 @@ ORDER BY c.codigo";
                     TOTAL_DEBE = debe,
                     TOTAL_HABER = haber,
                     Saldo = saldo,
-                    TipoSaldo = tipoSaldo
+                    TipoSaldo = tipoSaldo,
+                    NivelJerarquia = nivelJerarquia,
+                    CodigoCuentaPadre = codigoPadre
                 };
             }).ToList();
 
-            return Ok(resultado);
+            return Ok(resultadoPlano);
         }
+
 
         [HttpPost("EstadosFinancieros")]
         public async Task<ActionResult<IEnumerable<EstadosFinancieros>>> GetEstadosFinancieros(RequestConsultaLibros requestConsulta)

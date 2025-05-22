@@ -19,7 +19,7 @@ const LibroMayor = () => {
   const [libroMayor, setLibroMayor] = useState([]);
   const [periodos, setPeriodos] = useState([]);
   const [periodoSeleccionado, setPeriodoSeleccionado] = useState('');
-  const [periodoEstado, setPeriodoEstado] = useState(null); // true = cerrado, false = abierto
+  const [periodoEstado, setPeriodoEstado] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
@@ -31,12 +31,9 @@ const LibroMayor = () => {
   const handleChangePeriodo = (event) => {
     const idPeriodo = event.target.value;
     setPeriodoSeleccionado(idPeriodo);
-
-    // Buscar el estado del periodo seleccionado
     const periodo = periodos.find(p => p.id_periodo === idPeriodo);
     if (periodo) {
       setPeriodoEstado(periodo.estado);
-      // Mostrar alerta si periodo abierto (estado == false)
       setShowAlert(periodo.estado === false);
     } else {
       setPeriodoEstado(null);
@@ -60,6 +57,8 @@ const LibroMayor = () => {
       {
         Codigo: cuenta.codigo,
         Nombre: cuenta.nombre,
+        CuentaPadre: cuenta.codigoCuentaPadre || '---',
+        Nivel: cuenta.nivelJerarquia,
         Fecha: '',
         Descripcion: 'Saldo Inicial',
         Debe: '',
@@ -69,6 +68,8 @@ const LibroMayor = () => {
       ...cuenta.movimientos.map(mov => ({
         Codigo: cuenta.codigo,
         Nombre: cuenta.nombre,
+        CuentaPadre: cuenta.codigoCuentaPadre || '---',
+        Nivel: cuenta.nivelJerarquia,
         Fecha: mov.fecha,
         Descripcion: mov.descripcion,
         Debe: mov.debe,
@@ -91,13 +92,14 @@ const LibroMayor = () => {
     doc.setTextColor(0, 0, 0);
 
     libroMayor.forEach((cuenta, index) => {
-      const startY = doc.autoTable.previous?.finalY + 20 || 40;
-
+      const startY = doc.autoTable.previous?.finalY + 25 || 40;
       doc.setFontSize(14);
       doc.text(`${cuenta.codigo} - ${cuenta.nombre}`, 20, startY - 10);
+      doc.setFontSize(10);
+      doc.text(`Cuenta Padre: ${cuenta.codigoCuentaPadre || '---'} | Nivel Jerarquía: ${cuenta.nivelJerarquia}`, 20, startY);
 
       const bodyData = [
-        ['--', '', '', cuenta.saldoInicial.toFixed(2)], // Saldo inicial
+        ['--', '', '', cuenta.saldoInicial.toFixed(2)],
         ...cuenta.movimientos.map(mov => [
           mov.fecha,
           mov.debe.toFixed(2),
@@ -107,7 +109,7 @@ const LibroMayor = () => {
       ];
 
       doc.autoTable({
-        startY,
+        startY: startY + 5,
         head: [['Fecha', 'Debe', 'Haber', 'Saldo']],
         body: bodyData,
       });
@@ -137,7 +139,6 @@ const LibroMayor = () => {
         Libro Mayor
       </Typography>
 
-      {/* ALERTA SI PERIODO ABIERTO */}
       {showAlert && (
         <Alert
           severity="warning"
@@ -159,7 +160,6 @@ const LibroMayor = () => {
 
       <Box component="form" onSubmit={handleSubmit}
         sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 2, maxWidth: 400, mx: 'auto' }}>
-
         <FormControl fullWidth>
           <InputLabel sx={{ color: dorado }}>Seleccione un período</InputLabel>
           <Select
@@ -208,8 +208,11 @@ const LibroMayor = () => {
 
       {libroMayor.map((cuenta) => (
         <Box key={cuenta.cuentaId} sx={{ mb: 5 }}>
-          <Typography variant="h6" sx={{ color: dorado, mb: 1 }}>
+          <Typography variant="h6" sx={{ color: dorado, mb: 0.5 }}>
             {cuenta.codigo} - {cuenta.nombre}
+          </Typography>
+          <Typography variant="body2" sx={{ color: blanco, mb: 1, fontStyle: 'italic' }}>
+            Cuenta Padre: {cuenta.codigoCuentaPadre || '---'} | Nivel Jerarquía: {cuenta.nivelJerarquia}
           </Typography>
           <Table sx={{ backgroundColor: grisMedio }}>
             <TableHead>
@@ -220,7 +223,6 @@ const LibroMayor = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {/* Saldo inicial */}
               <TableRow sx={{ backgroundColor: '#333' }}>
                 <TableCell sx={{ color: blanco, fontStyle: 'italic' }}>-- Saldo Inicial --</TableCell>
                 <TableCell sx={{ color: blanco }}>-</TableCell>
@@ -228,7 +230,6 @@ const LibroMayor = () => {
                 <TableCell sx={{ color: blanco }}>{formatter.format(cuenta.saldoInicial)}</TableCell>
               </TableRow>
 
-              {/* Movimientos */}
               {cuenta.movimientos.map((mov, i) => (
                 <TableRow key={i}
                   sx={{ '&:nth-of-type(odd)': { backgroundColor: grisOscuro }, '&:hover': { backgroundColor: '#3e3e3e' } }}>

@@ -36,15 +36,49 @@ const EstadoResultados = () => {
       .catch(err => console.error(err));
   }, []);
 
-  // Obtener estado resultados al cambiar el periodo
   useEffect(() => {
     if (!IdPeriodo) return;
 
     axios
       .post('http://localhost:5000/api/libroscontables/EstadoResultados', { id_periodo: IdPeriodo })
-      .then(response => setEstadoResultados(response.data))
+      .then(response => {
+        const treeData = buildTree(response.data);
+        setEstadoResultados(treeData);
+      })
       .catch(error => console.error(error));
   }, [IdPeriodo]);
+
+  // Construye el árbol padre-hijo sin indentación pero agrupado cerca
+  const buildTree = (flatData) => {
+    // Map de cuentas por código
+    const map = new Map();
+    flatData.forEach(item => map.set(item.codigo, {...item, children: []}));
+
+    const tree = [];
+
+    flatData.forEach(item => {
+      if (item.codigoCuentaPadre && map.has(item.codigoCuentaPadre)) {
+        // Si tiene padre, agregarlo a los hijos del padre
+        map.get(item.codigoCuentaPadre).children.push(map.get(item.codigo));
+      } else {
+        // Si no tiene padre, es raíz
+        tree.push(map.get(item.codigo));
+      }
+    });
+
+    // Aplanar el árbol para renderizar sin indentación,
+    // poniendo primero la cuenta padre y luego sus hijos
+    const flatTree = [];
+    const flatten = (nodes) => {
+      nodes.forEach(n => {
+        flatTree.push(n);
+        if (n.children.length > 0) flatten(n.children);
+      });
+    };
+    flatten(tree);
+
+    return flatTree;
+  };
 
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(estadoResultados);
@@ -58,9 +92,11 @@ const EstadoResultados = () => {
     doc.setTextColor('#FFD700');
     doc.text('Estado de Resultados', 20, 10);
     doc.autoTable({
-      head: [['Código', 'Nombre', 'Resultado']],
+      head: [['Código', 'Código Padre', 'Nivel', 'Nombre', 'Resultado']],
       body: estadoResultados.map((row) => [
         row.codigo,
+        row.codigoCuentaPadre || '-',
+        row.nivelJerarquia != null ? row.nivelJerarquia : '-',
         row.nombre,
         formatter.format(row.resultado)
       ]),
@@ -74,6 +110,7 @@ const EstadoResultados = () => {
     setPeriodoId(event.target.value);
   };
 
+  // Filtrar ingresos y gastos con el resultado ya procesado
   const ingresos = estadoResultados.filter((x) => x.resultado > 0);
   const gastos = estadoResultados.filter((x) => x.resultado < 0);
 
@@ -100,22 +137,22 @@ const EstadoResultados = () => {
       <FormControl fullWidth sx={{ mb: 3 }}>
         <InputLabel sx={{ color: '#FFD700' }}>Periodo</InputLabel>
         <Select
-  value={IdPeriodo}
-  label="Periodo"
-  onChange={handlePeriodoChange}
-  sx={{
-    color: '#fff',
-    bgcolor: '#222',
-    '& .MuiOutlinedInput-notchedOutline': { borderColor: '#555' },
-    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#FFD700' }
-  }}
->
-  {periodos.map((p) => (
-    <MenuItem key={p.id_periodo} value={p.id_periodo}>
-      {`${p.descripcion} (${new Date(p.fecha_inicio).toLocaleDateString()} - ${new Date(p.fecha_fin).toLocaleDateString()})`}
-    </MenuItem>
-  ))}
-</Select>
+          value={IdPeriodo}
+          label="Periodo"
+          onChange={handlePeriodoChange}
+          sx={{
+            color: '#fff',
+            bgcolor: '#222',
+            '& .MuiOutlinedInput-notchedOutline': { borderColor: '#555' },
+            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#FFD700' }
+          }}
+        >
+          {periodos.map((p) => (
+            <MenuItem key={p.id_periodo} value={p.id_periodo}>
+              {`${p.descripcion} (${new Date(p.fecha_inicio).toLocaleDateString()} - ${new Date(p.fecha_fin).toLocaleDateString()})`}
+            </MenuItem>
+          ))}
+        </Select>
       </FormControl>
 
       {/* Botones de exportación */}
@@ -145,12 +182,14 @@ const EstadoResultados = () => {
           {ingresos.map((row, i) => (
             <TableRow key={i}>
               <TableCell sx={{ color: '#fff' }}>{row.codigo}</TableCell>
+              <TableCell sx={{ color: '#fff' }}>{row.codigoCuentaPadre || '-'}</TableCell>
+              <TableCell sx={{ color: '#fff' }}>{row.nivelJerarquia != null ? row.nivelJerarquia : '-'}</TableCell>
               <TableCell sx={{ color: '#fff' }}>{row.nombre}</TableCell>
               <TableCell sx={{ color: '#fff' }}>{formatter.format(row.resultado)}</TableCell>
             </TableRow>
           ))}
           <TableRow>
-            <TableCell colSpan={2} sx={{ color: '#FFD700', fontWeight: 'bold' }}>
+            <TableCell colSpan={4} sx={{ color: '#FFD700', fontWeight: 'bold' }}>
               Total Ingresos
             </TableCell>
             <TableCell sx={{ color: '#FFD700', fontWeight: 'bold' }}>
@@ -169,12 +208,14 @@ const EstadoResultados = () => {
           {gastos.map((row, i) => (
             <TableRow key={i}>
               <TableCell sx={{ color: '#fff' }}>{row.codigo}</TableCell>
+              <TableCell sx={{ color: '#fff' }}>{row.codigoCuentaPadre || '-'}</TableCell>
+              <TableCell sx={{ color: '#fff' }}>{row.nivelJerarquia != null ? row.nivelJerarquia : '-'}</TableCell>
               <TableCell sx={{ color: '#fff' }}>{row.nombre}</TableCell>
               <TableCell sx={{ color: '#fff' }}>{formatter.format(row.resultado)}</TableCell>
             </TableRow>
           ))}
           <TableRow>
-            <TableCell colSpan={2} sx={{ color: '#FFD700', fontWeight: 'bold' }}>
+            <TableCell colSpan={4} sx={{ color: '#FFD700', fontWeight: 'bold' }}>
               Total Gastos
             </TableCell>
             <TableCell sx={{ color: '#FFD700', fontWeight: 'bold' }}>

@@ -11,6 +11,8 @@
         public decimal Saldo { get; set; }
         public string Tipo { get; set; } // Activo, Pasivo, Capital
         public string TipoSaldo { get; set; } // "Deudor" o "Acreedor"
+        public int NivelJerarquia { get; set; }
+        public string CodigoCuentaPadre { get; set; }
     }
 
 

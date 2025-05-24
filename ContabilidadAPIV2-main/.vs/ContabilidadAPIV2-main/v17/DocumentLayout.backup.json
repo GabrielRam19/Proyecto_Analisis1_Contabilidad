@@ -7,6 +7,54 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Controllers\\LibrosContablesController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\SALDOCUENTAPERIODO.cs||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Models\\SALDOCUENTAPERIODO.cs||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\BalanceGeneralMovimientoParcialDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Dtos\\BalanceGeneralMovimientoParcialDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\ContabilidadAPIV2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ContabilidadAPIV2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\PERIODO.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Models\\PERIODO.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\PeriodosController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Controllers\\PeriodosController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\ASIENTOS.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Models\\ASIENTOS.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\CUENTAS.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Models\\CUENTAS.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Data\\ContabilidadContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Data\\ContabilidadContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\JerarquiasController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Controllers\\JerarquiasController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\CuentasController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Controllers\\CuentasController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\WeatherForecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:WeatherForecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\EstadoResultadosDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Dtos\\EstadoResultadosDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -27,60 +75,20 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Dtos\\LibroMayorDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\JerarquiasController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Controllers\\JerarquiasController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\BalanceGeneralMovimientoParcialDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Dtos\\BalanceGeneralMovimientoParcialDto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\EstadosFinancieros.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Models\\EstadosFinancieros.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Data\\ContabilidadContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Data\\ContabilidadContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\PeriodosController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Controllers\\PeriodosController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\SALDOCUENTAPERIODO.cs||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Models\\SALDOCUENTAPERIODO.cs||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\PERIODO.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Models\\PERIODO.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\CUENTAS.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Models\\CUENTAS.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\LibroMayor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Models\\LibroMayor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\ASIENTOS.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Models\\ASIENTOS.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\EstadoResultados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Models\\EstadoResultados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\AsientosController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Controllers\\AsientosController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\CuentasController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Controllers\\CuentasController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\RequestConsultaLibros.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -109,14 +117,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\ContabilidadAPIV2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ContabilidadAPIV2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\WeatherForecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:WeatherForecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -136,38 +136,170 @@
               "RelativeDocumentMoniker": "Controllers\\LibrosContablesController.cs",
               "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\LibrosContablesController.cs",
               "RelativeToolTip": "Controllers\\LibrosContablesController.cs",
-              "ViewState": "AgIAANwAAAAAAAAAAAAIwPwAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAACgBAAAAAAAAAAAuwE4BAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-02T17:02:39.368Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "LibroMayorDto.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\LibroMayorDto.cs",
-              "RelativeDocumentMoniker": "Dtos\\LibroMayorDto.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\LibroMayorDto.cs",
-              "RelativeToolTip": "Dtos\\LibroMayorDto.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAACEAAABCAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-18T21:04:40.364Z"
+              "DocumentIndex": 3,
+              "Title": "ContabilidadAPIV2.csproj",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\ContabilidadAPIV2.csproj",
+              "RelativeDocumentMoniker": "ContabilidadAPIV2.csproj",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\ContabilidadAPIV2.csproj",
+              "RelativeToolTip": "ContabilidadAPIV2.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAABQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-03-02T16:47:32.961Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "EstadosFinancieros.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\EstadosFinancieros.cs",
-              "RelativeDocumentMoniker": "Models\\EstadosFinancieros.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\EstadosFinancieros.cs",
-              "RelativeToolTip": "Models\\EstadosFinancieros.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAqAAAAAAAAAA==",
+              "Title": "Startup.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Startup.cs",
+              "RelativeDocumentMoniker": "Startup.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Startup.cs",
+              "RelativeToolTip": "Startup.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-02T16:45:51.126Z"
+              "WhenOpened": "2025-03-02T16:50:50.674Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
+              "Title": "CUENTAS.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\CUENTAS.cs",
+              "RelativeDocumentMoniker": "Models\\CUENTAS.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\CUENTAS.cs",
+              "RelativeToolTip": "Models\\CUENTAS.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-02T16:45:46.416Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ASIENTOS.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\ASIENTOS.cs",
+              "RelativeDocumentMoniker": "Models\\ASIENTOS.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\ASIENTOS.cs",
+              "RelativeToolTip": "Models\\ASIENTOS.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAAAYAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-02T16:45:33.795Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "PERIODO.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\PERIODO.cs",
+              "RelativeDocumentMoniker": "Models\\PERIODO.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\PERIODO.cs",
+              "RelativeToolTip": "Models\\PERIODO.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABMAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T03:01:29.847Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PeriodosController.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\PeriodosController.cs",
+              "RelativeDocumentMoniker": "Controllers\\PeriodosController.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\PeriodosController.cs",
+              "RelativeToolTip": "Controllers\\PeriodosController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEYAAABOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T03:05:06.745Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SALDOCUENTAPERIODO.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\SALDOCUENTAPERIODO.cs",
+              "RelativeDocumentMoniker": "Models\\SALDOCUENTAPERIODO.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\SALDOCUENTAPERIODO.cs",
+              "RelativeToolTip": "Models\\SALDOCUENTAPERIODO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-20T23:23:37.234Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "BalanceGeneralMovimientoParcialDto.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\BalanceGeneralMovimientoParcialDto.cs",
+              "RelativeDocumentMoniker": "Dtos\\BalanceGeneralMovimientoParcialDto.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\BalanceGeneralMovimientoParcialDto.cs",
+              "RelativeToolTip": "Dtos\\BalanceGeneralMovimientoParcialDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-19T00:36:17.521Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ContabilidadContext.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Data\\ContabilidadContext.cs",
+              "RelativeDocumentMoniker": "Data\\ContabilidadContext.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Data\\ContabilidadContext.cs",
+              "RelativeToolTip": "Data\\ContabilidadContext.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAACoAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-02T16:45:04.237Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "JerarquiasController.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\JerarquiasController.cs",
+              "RelativeDocumentMoniker": "Controllers\\JerarquiasController.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\JerarquiasController.cs",
+              "RelativeToolTip": "Controllers\\JerarquiasController.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAAAEYAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T03:22:38.803Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "CuentasController.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\CuentasController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CuentasController.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\CuentasController.cs",
+              "RelativeToolTip": "Controllers\\CuentasController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-02T17:03:13.257Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "WeatherForecast.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\WeatherForecast.cs",
+              "RelativeDocumentMoniker": "WeatherForecast.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\WeatherForecast.cs",
+              "RelativeToolTip": "WeatherForecast.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-02T16:50:46.041Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
               "Title": "JERARQUIA.cs",
               "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\JERARQUIA.cs",
               "RelativeDocumentMoniker": "Models\\JERARQUIA.cs",
@@ -179,55 +311,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "JerarquiasController.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\JerarquiasController.cs",
-              "RelativeDocumentMoniker": "Controllers\\JerarquiasController.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\JerarquiasController.cs",
-              "RelativeToolTip": "Controllers\\JerarquiasController.cs",
-              "ViewState": "AgIAADwAAAAAAAAAAAAAAEYAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-18T03:22:38.803Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "BalanceSaldosDto.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\BalanceSaldosDto.cs",
-              "RelativeDocumentMoniker": "Dtos\\BalanceSaldosDto.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\BalanceSaldosDto.cs",
-              "RelativeToolTip": "Dtos\\BalanceSaldosDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-18T21:45:30.194Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "BalanceGeneralMovimientoParcialDto.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\BalanceGeneralMovimientoParcialDto.cs",
-              "RelativeDocumentMoniker": "Dtos\\BalanceGeneralMovimientoParcialDto.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\BalanceGeneralMovimientoParcialDto.cs",
-              "RelativeToolTip": "Dtos\\BalanceGeneralMovimientoParcialDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-19T00:36:17.521Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "BalanceGeneral.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\BalanceGeneral.cs",
-              "RelativeDocumentMoniker": "Models\\BalanceGeneral.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\BalanceGeneral.cs",
-              "RelativeToolTip": "Models\\BalanceGeneral.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-02T16:45:39.456Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 13,
               "Title": "EstadoResultadosDto.cs",
               "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\EstadoResultadosDto.cs",
               "RelativeDocumentMoniker": "Dtos\\EstadoResultadosDto.cs",
@@ -239,67 +323,55 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "PeriodosController.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\PeriodosController.cs",
-              "RelativeDocumentMoniker": "Controllers\\PeriodosController.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\PeriodosController.cs",
-              "RelativeToolTip": "Controllers\\PeriodosController.cs",
-              "ViewState": "AgIAAE0AAAAAAAAAAAAuwEYAAABOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-18T03:05:06.745Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "CUENTAS.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\CUENTAS.cs",
-              "RelativeDocumentMoniker": "Models\\CUENTAS.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\CUENTAS.cs",
-              "RelativeToolTip": "Models\\CUENTAS.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-02T16:45:46.416Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ContabilidadContext.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Data\\ContabilidadContext.cs",
-              "RelativeDocumentMoniker": "Data\\ContabilidadContext.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Data\\ContabilidadContext.cs",
-              "RelativeToolTip": "Data\\ContabilidadContext.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAACQAAABDAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-02T16:45:04.237Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "PERIODO.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\PERIODO.cs",
-              "RelativeDocumentMoniker": "Models\\PERIODO.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\PERIODO.cs",
-              "RelativeToolTip": "Models\\PERIODO.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-18T03:01:29.847Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "SALDOCUENTAPERIODO.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\SALDOCUENTAPERIODO.cs",
-              "RelativeDocumentMoniker": "Models\\SALDOCUENTAPERIODO.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\SALDOCUENTAPERIODO.cs",
-              "RelativeToolTip": "Models\\SALDOCUENTAPERIODO.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABUAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-20T23:23:37.234Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 14,
+              "Title": "BalanceGeneral.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\BalanceGeneral.cs",
+              "RelativeDocumentMoniker": "Models\\BalanceGeneral.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\BalanceGeneral.cs",
+              "RelativeToolTip": "Models\\BalanceGeneral.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-02T16:45:39.456Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "BalanceSaldosDto.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\BalanceSaldosDto.cs",
+              "RelativeDocumentMoniker": "Dtos\\BalanceSaldosDto.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\BalanceSaldosDto.cs",
+              "RelativeToolTip": "Dtos\\BalanceSaldosDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T21:45:30.194Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "EstadosFinancieros.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\EstadosFinancieros.cs",
+              "RelativeDocumentMoniker": "Models\\EstadosFinancieros.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\EstadosFinancieros.cs",
+              "RelativeToolTip": "Models\\EstadosFinancieros.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-02T16:45:51.126Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "LibroMayorDto.cs",
+              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\LibroMayorDto.cs",
+              "RelativeDocumentMoniker": "Dtos\\LibroMayorDto.cs",
+              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\LibroMayorDto.cs",
+              "RelativeToolTip": "Dtos\\LibroMayorDto.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAACEAAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T21:04:40.364Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
               "Title": "LibroMayor.cs",
               "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\LibroMayor.cs",
               "RelativeDocumentMoniker": "Models\\LibroMayor.cs",
@@ -311,19 +383,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "ASIENTOS.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\ASIENTOS.cs",
-              "RelativeDocumentMoniker": "Models\\ASIENTOS.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\ASIENTOS.cs",
-              "RelativeToolTip": "Models\\ASIENTOS.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAYAAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-02T16:45:33.795Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 20,
               "Title": "EstadoResultados.cs",
               "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\EstadoResultados.cs",
               "RelativeDocumentMoniker": "Models\\EstadoResultados.cs",
@@ -335,31 +395,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "Startup.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Startup.cs",
-              "RelativeDocumentMoniker": "Startup.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Startup.cs",
-              "RelativeToolTip": "Startup.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAUwBsAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-02T16:50:50.674Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "CuentasController.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\CuentasController.cs",
-              "RelativeDocumentMoniker": "Controllers\\CuentasController.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\CuentasController.cs",
-              "RelativeToolTip": "Controllers\\CuentasController.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAAACIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-02T17:03:13.257Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 21,
               "Title": "AsientosController.cs",
               "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\AsientosController.cs",
               "RelativeDocumentMoniker": "Controllers\\AsientosController.cs",
@@ -371,7 +407,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 23,
               "Title": "BalanceSaldos.cs",
               "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\BalanceSaldos.cs",
               "RelativeDocumentMoniker": "Models\\BalanceSaldos.cs",
@@ -383,7 +419,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 22,
               "Title": "RequestConsultaLibros.cs",
               "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Models\\RequestConsultaLibros.cs",
               "RelativeDocumentMoniker": "Models\\RequestConsultaLibros.cs",
@@ -395,7 +431,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 24,
               "Title": "LibroDiarioDto.cs",
               "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Dtos\\LibroDiarioDto.cs",
               "RelativeDocumentMoniker": "Dtos\\LibroDiarioDto.cs",
@@ -407,7 +443,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 25,
               "Title": "WeatherForecastController.cs",
               "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Controllers\\WeatherForecastController.cs",
               "RelativeDocumentMoniker": "Controllers\\WeatherForecastController.cs",
@@ -419,7 +455,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 28,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -431,7 +467,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 27,
               "Title": "ContabilidadAPIV2.csproj.user",
               "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\ContabilidadAPIV2.csproj.user",
               "RelativeDocumentMoniker": "ContabilidadAPIV2.csproj.user",
@@ -443,7 +479,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 26,
               "Title": "ContabilidadAPIV2.http",
               "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\ContabilidadAPIV2.http",
               "RelativeDocumentMoniker": "ContabilidadAPIV2.http",
@@ -452,30 +488,6 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
               "WhenOpened": "2025-05-18T03:06:31.972Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 27,
-              "Title": "ContabilidadAPIV2.csproj",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\ContabilidadAPIV2.csproj",
-              "RelativeDocumentMoniker": "ContabilidadAPIV2.csproj",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\ContabilidadAPIV2.csproj",
-              "RelativeToolTip": "ContabilidadAPIV2.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA+AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-03-02T16:47:32.961Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 28,
-              "Title": "WeatherForecast.cs",
-              "DocumentMoniker": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\WeatherForecast.cs",
-              "RelativeDocumentMoniker": "WeatherForecast.cs",
-              "ToolTip": "C:\\Users\\jramirez\\Downloads\\Proyecto\\ContabilidadAPIV2-main\\WeatherForecast.cs",
-              "RelativeToolTip": "WeatherForecast.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-02T16:50:46.041Z"
             },
             {
               "$type": "Bookmark",

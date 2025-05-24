@@ -13,7 +13,8 @@ import {
   MenuItem,
   Box,
   FormControl,
-  InputLabel
+  InputLabel,
+  Alert
 } from '@mui/material';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
@@ -23,6 +24,7 @@ const EstadoResultados = () => {
   const [estadoResultados, setEstadoResultados] = useState([]);
   const [periodos, setPeriodos] = useState([]);
   const [IdPeriodo, setPeriodoId] = useState('');
+  const [periodoEstado, setPeriodoEstado] = useState(true); // true = cerrado, false = abierto
 
   const formatter = new Intl.NumberFormat('es-MX', {
     style: 'currency',
@@ -37,20 +39,35 @@ const EstadoResultados = () => {
   }, []);
 
   useEffect(() => {
-    if (!IdPeriodo) return;
+    if (!IdPeriodo) {
+      setEstadoResultados([]);
+      setPeriodoEstado(true);
+      return;
+    }
 
     axios
       .post('http://localhost:5000/api/libroscontables/EstadoResultados', { id_periodo: IdPeriodo })
       .then(response => {
+        // Suponiendo que la respuesta es un objeto con { estadoResultados: [], estadoPeriodo: true/false }
+        // Pero según tu código anterior, recibes directamente un arreglo de cuentas
+        // Entonces, para obtener el estado, debemos buscarlo en periodos o hacer otra llamada
+
+        // Para simplificar, busquemos el periodo seleccionado en la lista periodos:
+        const periodoSeleccionado = periodos.find(p => p.id_periodo === IdPeriodo);
+        if (periodoSeleccionado) {
+          setPeriodoEstado(periodoSeleccionado.estado);
+        } else {
+          setPeriodoEstado(true); // por defecto cerrado
+        }
+
         const treeData = buildTree(response.data);
         setEstadoResultados(treeData);
       })
       .catch(error => console.error(error));
-  }, [IdPeriodo]);
+  }, [IdPeriodo, periodos]);
 
   // Construye el árbol padre-hijo sin indentación pero agrupado cerca
   const buildTree = (flatData) => {
-    // Map de cuentas por código
     const map = new Map();
     flatData.forEach(item => map.set(item.codigo, {...item, children: []}));
 
@@ -58,16 +75,12 @@ const EstadoResultados = () => {
 
     flatData.forEach(item => {
       if (item.codigoCuentaPadre && map.has(item.codigoCuentaPadre)) {
-        // Si tiene padre, agregarlo a los hijos del padre
         map.get(item.codigoCuentaPadre).children.push(map.get(item.codigo));
       } else {
-        // Si no tiene padre, es raíz
         tree.push(map.get(item.codigo));
       }
     });
 
-    // Aplanar el árbol para renderizar sin indentación,
-    // poniendo primero la cuenta padre y luego sus hijos
     const flatTree = [];
     const flatten = (nodes) => {
       nodes.forEach(n => {
@@ -78,6 +91,11 @@ const EstadoResultados = () => {
     flatten(tree);
 
     return flatTree;
+  };
+
+  const parseDateWithoutTimezone = (fecha) => {
+    const [year, month, day] = fecha.split('T')[0].split('-');
+    return new Date(year, month - 1, day);
   };
 
   const exportToExcel = () => {
@@ -110,7 +128,6 @@ const EstadoResultados = () => {
     setPeriodoId(event.target.value);
   };
 
-  // Filtrar ingresos y gastos con el resultado ya procesado
   const ingresos = estadoResultados.filter((x) => x.resultado > 0);
   const gastos = estadoResultados.filter((x) => x.resultado < 0);
 
@@ -133,6 +150,13 @@ const EstadoResultados = () => {
         Estado de Resultados
       </Typography>
 
+      {/* Alerta no intrusiva si el periodo no está cerrado */}
+      {!periodoEstado && (
+        <Alert severity="warning" sx={{ mb: 3 }}>
+          Los resultados son preliminares porque el periodo seleccionado no está cerrado.
+        </Alert>
+      )}
+
       {/* Select para elegir periodo */}
       <FormControl fullWidth sx={{ mb: 3 }}>
         <InputLabel sx={{ color: '#FFD700' }}>Periodo</InputLabel>
@@ -149,7 +173,7 @@ const EstadoResultados = () => {
         >
           {periodos.map((p) => (
             <MenuItem key={p.id_periodo} value={p.id_periodo}>
-              {`${p.descripcion} (${new Date(p.fecha_inicio).toLocaleDateString()} - ${new Date(p.fecha_fin).toLocaleDateString()})`}
+              {`${p.descripcion} (${parseDateWithoutTimezone(p.fecha_inicio).toLocaleDateString()} - ${parseDateWithoutTimezone(p.fecha_fin).toLocaleDateString()})`}
             </MenuItem>
           ))}
         </Select>

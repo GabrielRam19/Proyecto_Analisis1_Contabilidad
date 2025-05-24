@@ -12,6 +12,7 @@ const BalanceGeneral = () => {
     const [balanceGeneral, setBalanceGeneral] = useState([]);
     const [periodoId, setPeriodoId] = useState('');
     const [periodos, setPeriodos] = useState([]);
+    const [periodoSeleccionado, setPeriodoSeleccionado] = useState(null);
 
     useEffect(() => {
         const fetchPeriodos = async () => {
@@ -25,17 +26,30 @@ const BalanceGeneral = () => {
         fetchPeriodos();
     }, []);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await axios.post('http://localhost:5000/api/libroscontables/BalanceGeneral', {
-                id_periodo: periodoId
-            });
-            setBalanceGeneral(response.data);
-        } catch (err) {
-            console.error(err);
-        }
+    // Función para formatear fecha sin desfase UTC
+    const formatFechaLocal = (fechaStr) => {
+        if (!fechaStr) return '';
+        // Extrae solo la parte yyyy-mm-dd
+        const [year, month, day] = fechaStr.split('T')[0].split('-');
+        // Crea una fecha local con esos valores (mes 0-based)
+        const fecha = new Date(year, month - 1, day);
+        return fecha.toLocaleDateString();
     };
+
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        const periodo = periodos.find(p => p.id_periodo === periodoId);
+        setPeriodoSeleccionado(periodo); // Guardar el objeto del periodo
+
+        const response = await axios.post('http://localhost:5000/api/libroscontables/BalanceGeneral', {
+            id_periodo: periodoId
+        });
+        setBalanceGeneral(response.data);
+    } catch (err) {
+        console.error(err);
+    }
+};
 
     const exportToExcel = () => {
         const data = balanceGeneral.map(row => ({
@@ -133,31 +147,33 @@ const BalanceGeneral = () => {
 
         return (
             <Grid item xs={12} md={6}>
-                <Typography variant="h6" sx={{ color: '#D4AF37', mb: 1 }}>{titulo}</Typography>
-                <Table size="small">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell sx={{ color: '#D4AF37' }}>Código</TableCell>
-                            <TableCell sx={{ color: '#D4AF37' }}>Código Padre</TableCell>
-                            <TableCell sx={{ color: '#D4AF37' }}>Nivel</TableCell>
-                            <TableCell sx={{ color: '#D4AF37' }}>Nombre</TableCell>
-                            <TableCell sx={{ color: '#D4AF37' }}>Saldo Inicial</TableCell>
-                            <TableCell sx={{ color: '#D4AF37' }}>Debe</TableCell>
-                            <TableCell sx={{ color: '#D4AF37' }}>Haber</TableCell>
-                            <TableCell sx={{ color: '#D4AF37' }}>Saldo Final</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {arbolCuentas.map(row => renderRow(row))}
-                        <TableRow>
-                            <TableCell colSpan={7} sx={{ color: '#D4AF37', fontWeight: 'bold' }}>Total {titulo}</TableCell>
-                            <TableCell sx={{ color: '#D4AF37', fontWeight: 'bold' }}>
-                                {formatter.format(getTotal(cuentas))}
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            </Grid>
+    <Typography variant="h6" sx={{ color: '#D4AF37', mb: 1 }}>{titulo}</Typography>
+    <Box sx={{ overflowX: 'auto' }}>
+        <Table size="small">
+            <TableHead>
+                <TableRow>
+                    <TableCell sx={{ color: '#D4AF37' }}>Código</TableCell>
+                    <TableCell sx={{ color: '#D4AF37' }}>Código Padre</TableCell>
+                    <TableCell sx={{ color: '#D4AF37' }}>Nivel</TableCell>
+                    <TableCell sx={{ color: '#D4AF37' }}>Nombre</TableCell>
+                    <TableCell sx={{ color: '#D4AF37' }}>Saldo Inicial</TableCell>
+                    <TableCell sx={{ color: '#D4AF37' }}>Debe</TableCell>
+                    <TableCell sx={{ color: '#D4AF37' }}>Haber</TableCell>
+                    <TableCell sx={{ color: '#D4AF37' }}>Saldo Final</TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {arbolCuentas.map(row => renderRow(row))}
+                <TableRow>
+                    <TableCell colSpan={7} sx={{ color: '#D4AF37', fontWeight: 'bold' }}>Total {titulo}</TableCell>
+                    <TableCell sx={{ color: '#D4AF37', fontWeight: 'bold' }}>
+                        {formatter.format(getTotal(cuentas))}
+                    </TableCell>
+                </TableRow>
+            </TableBody>
+        </Table>
+    </Box>
+</Grid>
         );
     };
 
@@ -196,7 +212,7 @@ const BalanceGeneral = () => {
                 >
                     {periodos.map((p) => (
                         <MenuItem key={p.id_periodo} value={p.id_periodo}>
-                            {`${p.descripcion} (${new Date(p.fecha_inicio).toLocaleDateString()} - ${new Date(p.fecha_fin).toLocaleDateString()})`}
+                            {`${p.descripcion} (${formatFechaLocal(p.fecha_inicio)} - ${formatFechaLocal(p.fecha_fin)})`}
                         </MenuItem>
                     ))}
                 </TextField>
@@ -213,6 +229,21 @@ const BalanceGeneral = () => {
                     Exportar a PDF
                 </Button>
             </Box>
+
+            {periodoSeleccionado && periodoSeleccionado.estado === false && (
+    <Box sx={{
+        backgroundColor: '#333',
+        borderLeft: '5px solid #D4AF37',
+        color: '#fff',
+        p: 2,
+        borderRadius: 1,
+        mb: 3
+    }}>
+        <Typography variant="body1" sx={{ color: '#D4AF37' }}>
+            ⚠️ El periodo aún no está cerrado. Los datos mostrados son preliminares.
+        </Typography>
+    </Box>
+)}
 
             <Grid container spacing={3}>
                 {renderSeccion("Activo", activos)}

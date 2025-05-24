@@ -3,7 +3,8 @@ import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Typography,
-  Button, Box, MenuItem, Select, InputLabel, FormControl
+  Button, Box, MenuItem, Select, InputLabel, FormControl,
+  Alert
 } from '@mui/material';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
@@ -13,6 +14,7 @@ const BalanceSaldos = () => {
   const [balanceSaldos, setBalanceSaldos] = useState([]);
   const [periodos, setPeriodos] = useState([]);
   const [periodoSeleccionado, setPeriodoSeleccionado] = useState('');
+  const [periodoInfo, setPeriodoInfo] = useState(null);
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/periodos')
@@ -21,7 +23,10 @@ const BalanceSaldos = () => {
   }, []);
 
   const handlePeriodoChange = (event) => {
-    setPeriodoSeleccionado(event.target.value);
+    const id = event.target.value;
+    setPeriodoSeleccionado(id);
+    const info = periodos.find(p => p.id_periodo === id);
+    setPeriodoInfo(info || null);
   };
 
   const handleSubmit = (event) => {
@@ -70,7 +75,6 @@ const BalanceSaldos = () => {
     minimumFractionDigits: 0
   });
 
-  // Construir el árbol padre-hijo
   const buildTree = (flatData) => {
     const map = {};
     const roots = [];
@@ -90,7 +94,6 @@ const BalanceSaldos = () => {
     return roots;
   };
 
-  // Aplanar el árbol en orden jerárquico con indentación
   const flattenTree = (nodes, depth = 0) => {
     let result = [];
     nodes.forEach(node => {
@@ -139,6 +142,12 @@ const BalanceSaldos = () => {
             ))}
           </Select>
         </FormControl>
+
+        {periodoInfo && periodoInfo.estado === false && (
+          <Alert severity="warning" sx={{ mb: 2, bgcolor: '#332700', color: '#FFD700' }}>
+            El periodo aún no está cerrado. Los resultados mostrados son preliminares.
+          </Alert>
+        )}
 
         <Button type="submit" variant="contained" color="primary" sx={{
           backgroundColor: '#FFD700',

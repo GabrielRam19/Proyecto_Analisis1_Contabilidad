@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ContabilidadAPIV2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cfa9e981c96626bff7e54014dd6d6e6b15a26479")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+958614b6efc88974ccf1768f9fa6f020ec220b2a")]
 [assembly: System.Reflection.AssemblyProductAttribute("ContabilidadAPIV2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ContabilidadAPIV2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

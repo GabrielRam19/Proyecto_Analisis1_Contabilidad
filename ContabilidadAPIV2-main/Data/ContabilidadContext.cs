@@ -16,7 +16,6 @@ namespace ContabilidadAPIV2.Controllers
         public DbSet<PERIODO> PERIODO { get; set; }
         public DbSet<SALDOCUENTAPERIODO> SALDOCUENTAPERIODO { get; set; }
 
-        // Agregar DbSet para las vistas
         public DbSet<LibroMayor> LibroMayor { get; set; }
         public DbSet<BalanceSaldos> BalanceSaldos { get; set; }
         public DbSet<EstadoResultados> EstadoResultados { get; set; }
@@ -26,7 +25,7 @@ namespace ContabilidadAPIV2.Controllers
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Configuracion de dtos
+
             modelBuilder.Entity<LibroMayorMovimientoDto>().HasNoKey();
             modelBuilder.Entity<BalanceSaldosDto>().HasNoKey();
             modelBuilder.Entity<BalanceSaldosParcialDto>().HasNoKey();
@@ -34,20 +33,18 @@ namespace ContabilidadAPIV2.Controllers
             modelBuilder.Entity<EstadoResultadosDto>().HasNoKey();
             modelBuilder.Entity<BalanceGeneralMovimientoParcialDto>().HasNoKey();
 
-            // Configurar las vistas como entidades de solo lectura
             modelBuilder.Entity<LibroMayor>().ToView("Libro_Mayor").HasKey(e => new { e.CUENTA_ID, e.Fecha });
             modelBuilder.Entity<BalanceSaldos>().ToView("Balance_Saldos").HasKey(e => e.CUENTA_ID);
             modelBuilder.Entity<EstadoResultados>().ToView("Estado_Resultados").HasKey(e => e.CUENTA_ID);
             modelBuilder.Entity<BalanceGeneral>().ToView("Balance_General").HasKey(e => e.CUENTA_ID);
             modelBuilder.Entity<EstadosFinancieros>().ToView("Estados_Financieros").HasKey(e => new { e.TIPO_ESTADO, e.CUENTA_ID });
 
-            // Configurar las relaciones de las entidades
+            // Relaciones
             modelBuilder.Entity<ASIENTOS>()
                 .HasMany(a => a.Detalles)
                 .WithOne(d => d.Asiento)
                 .HasForeignKey(d => d.ASIENTO_ID);
         }
-
     }
 
 }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
+using MySqlConnector;
 
 
 namespace ContabilidadAPIV2.Controllers
@@ -90,60 +90,58 @@ ORDER BY
     c.cuenta_id, a.fecha, a.asiento_id, d.detalle_id";
 
             var saldosIniciales = await _context.SALDOCUENTAPERIODO
-    .Where(s => s.id_periodo == requestConsulta.id_periodo)
-    .ToDictionaryAsync(s => s.cuenta_id, s => s.saldo_inicial);
+                .Where(s => s.id_periodo == requestConsulta.id_periodo)
+                .ToDictionaryAsync(s => s.cuenta_id, s => s.saldo_inicial);
 
+            // CAMBIO: Usamos MySqlParameter en lugar de SqlParameter
             var movimientosRaw = await _context.Set<LibroMayorMovimientoRawDto>()
                 .FromSqlRaw(query,
-                    new SqlParameter("@FechaInicio", periodo.fecha_inicio.ToDateTime(TimeOnly.MinValue)),
-                    new SqlParameter("@FechaFin", periodo.fecha_fin.ToDateTime(TimeOnly.MinValue)))
+                    new MySqlParameter("@FechaInicio", periodo.fecha_inicio.ToDateTime(TimeOnly.MinValue)),
+                    new MySqlParameter("@FechaFin", periodo.fecha_fin.ToDateTime(TimeOnly.MinValue)))
                 .ToListAsync();
 
-            // Cargar jerarquías
             var jerarquias = await _context.JERARQUIA
                 .ToDictionaryAsync(j => j.codigo_cuenta_hijo, j => new { j.codigo_cuenta_padre, j.nivel });
 
-            // Agrupar por cuenta
             var agrupado = movimientosRaw
-    .GroupBy(m => new { m.Cuenta_Id, m.Codigo, m.Nombre })
-    .Select(g =>
-    {
-        decimal saldoInicial = saldosIniciales.TryGetValue(g.Key.Cuenta_Id, out var s) ? s : 0;
-        decimal saldoAcumulado = saldoInicial;
+                .GroupBy(m => new { m.Cuenta_Id, m.Codigo, m.Nombre })
+                .Select(g =>
+                {
+                    decimal saldoInicial = saldosIniciales.TryGetValue(g.Key.Cuenta_Id, out var s) ? s : 0;
+                    decimal saldoAcumulado = saldoInicial;
 
-        var movimientosConSaldo = g.Select(m =>
-        {
-            saldoAcumulado += m.Debe - m.Haber;
-            return new LibroMayorMovimientoDto
-            {
-                Detalle_Id = m.Detalle_Id,
-                Cuenta_Id = m.Cuenta_Id,
-                Codigo = m.Codigo,
-                Nombre = m.Nombre,
-                Asiento_Id = m.Asiento_Id,
-                Descripcion = m.Descripcion,
-                Fecha = m.Fecha,
-                Debe = m.Debe,
-                Haber = m.Haber,
-                Saldo = saldoAcumulado
-            };
-        }).ToList();
+                    var movimientosConSaldo = g.Select(m =>
+                    {
+                        saldoAcumulado += m.Debe - m.Haber;
+                        return new LibroMayorMovimientoDto
+                        {
+                            Detalle_Id = m.Detalle_Id,
+                            Cuenta_Id = m.Cuenta_Id,
+                            Codigo = m.Codigo,
+                            Nombre = m.Nombre,
+                            Asiento_Id = m.Asiento_Id,
+                            Descripcion = m.Descripcion,
+                            Fecha = m.Fecha,
+                            Debe = m.Debe,
+                            Haber = m.Haber,
+                            Saldo = saldoAcumulado
+                        };
+                    }).ToList();
 
-        // Buscar jerarquía
-        jerarquias.TryGetValue(g.Key.Codigo, out var jerarquiaInfo);
+                    jerarquias.TryGetValue(g.Key.Codigo, out var jerarquiaInfo);
 
-        return new LibroMayorAgrupado
-        {
-            CuentaId = g.Key.Cuenta_Id,
-            Codigo = g.Key.Codigo,
-            Nombre = g.Key.Nombre,
-            SaldoInicial = saldoInicial,
-            Movimientos = movimientosConSaldo,
-            CodigoCuentaPadre = jerarquiaInfo?.codigo_cuenta_padre,
-            NivelJerarquia = jerarquiaInfo?.nivel
-        };
-    })
-    .ToList();
+                    return new LibroMayorAgrupado
+                    {
+                        CuentaId = g.Key.Cuenta_Id,
+                        Codigo = g.Key.Codigo,
+                        Nombre = g.Key.Nombre,
+                        SaldoInicial = saldoInicial,
+                        Movimientos = movimientosConSaldo,
+                        CodigoCuentaPadre = jerarquiaInfo?.codigo_cuenta_padre,
+                        NivelJerarquia = jerarquiaInfo?.nivel
+                    };
+                })
+                .ToList();
 
             return agrupado;
         }
@@ -162,15 +160,15 @@ ORDER BY
                 .Where(s => s.id_periodo == requestConsulta.id_periodo)
                 .ToDictionaryAsync(s => s.cuenta_id, s => s.saldo_inicial);
 
-            // Consulta de movimientos del periodo
+            // Consulta de movimientos del periodo con sintaxis MySQL
             var query = @"
 SELECT 
     c.cuenta_id,
     c.codigo,
     c.nombre,
 
-    ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.debe ELSE 0 END), 0) AS total_debe,
-    ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.haber ELSE 0 END), 0) AS total_haber
+    IFNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.debe ELSE 0 END), 0) AS total_debe,
+    IFNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.haber ELSE 0 END), 0) AS total_haber
 
 FROM Detalle_Asiento d
 JOIN Cuentas c ON d.cuenta_id = c.cuenta_id
@@ -179,77 +177,77 @@ WHERE a.fecha BETWEEN @FechaInicio AND @FechaFin
 GROUP BY c.cuenta_id, c.codigo, c.nombre
 ORDER BY c.codigo";
 
-            var movimientosPeriodo = await _context.Set<BalanceSaldosParcialDto>() // Nuevo DTO intermedio
+            var movimientosPeriodo = await _context.Set<BalanceSaldosParcialDto>()
                 .FromSqlRaw(query,
-                    new SqlParameter("@FechaInicio", periodo.fecha_inicio),
-                    new SqlParameter("@FechaFin", periodo.fecha_fin))
+                    new MySqlParameter("@FechaInicio", periodo.fecha_inicio),
+                    new MySqlParameter("@FechaFin", periodo.fecha_fin))
                 .ToListAsync();
+
             // Obtener jerarquía para cada cuenta
             var jerarquias = await _context.JERARQUIA.ToListAsync();
             var jerarquiaDict = jerarquias.ToDictionary(j => j.codigo_cuenta_hijo);
 
             // Combinar con saldos iniciales
             var resultado = movimientosPeriodo
-    .Select(m =>
-    {
-        var saldoInicial = saldosIniciales.TryGetValue(m.Cuenta_Id, out var s) ? s : 0;
-        var saldoFinal = saldoInicial + (m.Total_Debe - m.Total_Haber);
+                .Select(m =>
+                {
+                    var saldoInicial = saldosIniciales.TryGetValue(m.Cuenta_Id, out var s) ? s : 0;
+                    var saldoFinal = saldoInicial + (m.Total_Debe - m.Total_Haber);
 
-        jerarquiaDict.TryGetValue(m.Codigo, out var jerarquia);
+                    jerarquiaDict.TryGetValue(m.Codigo, out var jerarquia);
 
-        return new BalanceSaldosDto
-        {
-            Cuenta_Id = m.Cuenta_Id,
-            Codigo = m.Codigo,
-            Nombre = m.Nombre,
-            Saldo_Inicial = saldoInicial,
-            Total_Debe = m.Total_Debe,
-            Total_Haber = m.Total_Haber,
-            Saldo_Final = saldoFinal,
-            CodigoCuentaPadre = jerarquia?.codigo_cuenta_padre,
-            NivelJerarquia = jerarquia?.nivel
-        };
-    })
-    .ToList();
+                    return new BalanceSaldosDto
+                    {
+                        Cuenta_Id = m.Cuenta_Id,
+                        Codigo = m.Codigo,
+                        Nombre = m.Nombre,
+                        Saldo_Inicial = saldoInicial,
+                        Total_Debe = m.Total_Debe,
+                        Total_Haber = m.Total_Haber,
+                        Saldo_Final = saldoFinal,
+                        CodigoCuentaPadre = jerarquia?.codigo_cuenta_padre,
+                        NivelJerarquia = jerarquia?.nivel
+                    };
+                })
+                .ToList();
 
             return Ok(resultado);
         }
-
 
         [HttpPost("EstadoResultados")]
         public async Task<ActionResult<IEnumerable<EstadoResultadosDto>>> GetEstadoResultados(RequestConsultaLibros requestConsulta)
         {
             var query = @"
-        SELECT 
-            c.cuenta_id,
-            c.codigo,
-            c.nombre,
-            SUM(d.debe) AS total_debe,
-            SUM(d.haber) AS total_haber,
-            SUM(d.haber - d.debe) AS resultado,
-            j.codigo_cuenta_padre AS codigoCuentaPadre,
-            j.nivel AS nivelJerarquia
-        FROM 
-            Detalle_Asiento d
-        JOIN 
-            Cuentas c ON d.cuenta_id = c.cuenta_id
-        JOIN 
-            Asientos a ON d.asiento_id = a.asiento_id
-        LEFT JOIN 
-            JERARQUIA j ON c.codigo = j.codigo_cuenta_hijo
-        WHERE 
-            c.tipo IN ('Ingreso', 'Gasto') AND
-            a.id_periodo = @IdPeriodo
-        GROUP BY 
-            c.cuenta_id, c.codigo, c.nombre, j.codigo_cuenta_padre, j.nivel
-        ORDER BY 
-            c.codigo";
+SELECT 
+    c.cuenta_id,
+    c.codigo,
+    c.nombre,
+    SUM(d.debe) AS total_debe,
+    SUM(d.haber) AS total_haber,
+    SUM(d.haber - d.debe) AS resultado,
+    j.codigo_cuenta_padre AS codigoCuentaPadre,
+    j.nivel AS nivelJerarquia
+FROM 
+    Detalle_Asiento d
+JOIN 
+    Cuentas c ON d.cuenta_id = c.cuenta_id
+JOIN 
+    Asientos a ON d.asiento_id = a.asiento_id
+LEFT JOIN 
+    JERARQUIA j ON c.codigo = j.codigo_cuenta_hijo
+WHERE 
+    c.tipo IN ('Ingreso', 'Gasto') AND
+    a.id_periodo = @IdPeriodo
+GROUP BY 
+    c.cuenta_id, c.codigo, c.nombre, j.codigo_cuenta_padre, j.nivel
+ORDER BY 
+    c.codigo";
 
             var resultado = await _context.Set<EstadoResultadosDto>()
-                .FromSqlRaw(query, new SqlParameter("@IdPeriodo", requestConsulta.id_periodo))
+                .FromSqlRaw(query, new MySqlParameter("@IdPeriodo", requestConsulta.id_periodo))
                 .ToListAsync();
 
-            return resultado;
+            return Ok(resultado);
         }
 
         [HttpPost("BalanceGeneral")]
@@ -261,14 +259,13 @@ ORDER BY c.codigo";
             if (periodo == null)
                 return NotFound("Periodo no encontrado");
 
+            var cuentas = await _context.CUENTAS
+                .Where(c => c.TIPO == "Activo" || c.TIPO == "Pasivo" || c.TIPO == "Capital")
+                .ToListAsync();
+
             var saldosIniciales = await _context.SALDOCUENTAPERIODO
                 .Where(s => s.id_periodo == requestConsulta.id_periodo)
-                .Join(_context.CUENTAS,
-                      saldo => saldo.cuenta_id,
-                      cuenta => cuenta.CUENTA_ID,
-                      (saldo, cuenta) => new { cuenta.CUENTA_ID, cuenta.CODIGO, cuenta.NOMBRE, cuenta.TIPO, saldo.saldo_inicial })
-                .Where(x => x.TIPO == "Activo" || x.TIPO == "Pasivo" || x.TIPO == "Capital")
-                .ToListAsync();
+                .ToDictionaryAsync(s => s.cuenta_id, s => s.saldo_inicial);
 
             var query = @"
 SELECT 
@@ -288,8 +285,10 @@ GROUP BY
     c.cuenta_id";
 
             var movimientos = await _context.Set<BalanceGeneralMovimientoParcialDto>()
-                .FromSqlRaw(query, new SqlParameter("@PeriodoId", requestConsulta.id_periodo))
+                .FromSqlRaw(query, new MySqlParameter("@PeriodoId", requestConsulta.id_periodo))
                 .ToListAsync();
+
+            var movimientosDict = movimientos.ToDictionary(m => m.Cuenta_Id);
 
             var jerarquias = await _context.JERARQUIA.ToListAsync();
 
@@ -301,27 +300,28 @@ GROUP BY
                 .GroupBy(j => j.codigo_cuenta_hijo)
                 .ToDictionary(g => g.Key, g => g.First().codigo_cuenta_padre);
 
-            var resultadoPlano = saldosIniciales.Select(s =>
+            var resultado = cuentas.Select(c =>
             {
-                var movimiento = movimientos.FirstOrDefault(m => m.Cuenta_Id == s.CUENTA_ID);
-                var debe = movimiento?.Total_Debe ?? 0;
-                var haber = movimiento?.Total_Haber ?? 0;
-                var saldoBruto = s.saldo_inicial + (debe - haber);
+                saldosIniciales.TryGetValue(c.CUENTA_ID, out decimal saldoInicial);
+                movimientosDict.TryGetValue(c.CUENTA_ID, out var mov);
+                decimal debe = mov?.Total_Debe ?? 0;
+                decimal haber = mov?.Total_Haber ?? 0;
+                decimal saldoBruto = saldoInicial + (debe - haber);
 
                 // Para activos y pasivos el saldo siempre es positivo
-                var saldo = (s.TIPO == "Activo" || s.TIPO == "Pasivo") ? Math.Abs(saldoBruto) : saldoBruto;
-                var tipoSaldo = saldo >= 0 ? "Deudor" : "Acreedor";
+                decimal saldo = (c.TIPO == "Activo" || c.TIPO == "Pasivo") ? Math.Abs(saldoBruto) : saldoBruto;
+                string tipoSaldo = saldo >= 0 ? "Deudor" : "Acreedor";
 
-                nivelesPorCodigo.TryGetValue(s.CODIGO, out int nivelJerarquia);
-                padresPorCodigo.TryGetValue(s.CODIGO, out string codigoPadre);
+                nivelesPorCodigo.TryGetValue(c.CODIGO, out int nivelJerarquia);
+                padresPorCodigo.TryGetValue(c.CODIGO, out string codigoPadre);
 
                 return new BalanceGeneral
                 {
-                    CUENTA_ID = s.CUENTA_ID,
-                    Codigo = s.CODIGO,
-                    Nombre = s.NOMBRE,
-                    Tipo = s.TIPO,
-                    SaldoInicial = s.saldo_inicial,
+                    CUENTA_ID = c.CUENTA_ID,
+                    Codigo = c.CODIGO,
+                    Nombre = c.NOMBRE,
+                    Tipo = c.TIPO,
+                    SaldoInicial = saldoInicial,
                     TOTAL_DEBE = debe,
                     TOTAL_HABER = haber,
                     Saldo = saldo,
@@ -331,7 +331,7 @@ GROUP BY
                 };
             }).ToList();
 
-            return Ok(resultadoPlano);
+            return Ok(resultado);
         }
 
 
@@ -354,10 +354,10 @@ SELECT
     c.nombre,
 
     -- Sumas históricas hasta antes del periodo
-    ISNULL(SUM(CASE WHEN a.fecha < @FechaInicio THEN d.debe ELSE 0 END), 0) AS total_debe,
-    ISNULL(SUM(CASE WHEN a.fecha < @FechaInicio THEN d.haber ELSE 0 END), 0) AS total_haber,
-    ISNULL(SUM(CASE WHEN a.fecha < @FechaInicio THEN d.debe - d.haber ELSE 0 END), 0) +
-    ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.debe - d.haber ELSE 0 END), 0) AS saldo
+    IFNULL(SUM(CASE WHEN a.fecha < @FechaInicio THEN d.debe ELSE 0 END), 0) AS total_debe,
+    IFNULL(SUM(CASE WHEN a.fecha < @FechaInicio THEN d.haber ELSE 0 END), 0) AS total_haber,
+    IFNULL(SUM(CASE WHEN a.fecha < @FechaInicio THEN d.debe - d.haber ELSE 0 END), 0) +
+    IFNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.debe - d.haber ELSE 0 END), 0) AS saldo
 
 FROM Detalle_Asiento d
 JOIN Cuentas c ON d.cuenta_id = c.cuenta_id
@@ -377,9 +377,9 @@ SELECT
     c.nombre,
 
     -- Solo movimientos dentro del periodo
-    ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.debe ELSE 0 END), 0) AS total_debe,
-    ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.haber ELSE 0 END), 0) AS total_haber,
-    ISNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.haber - d.debe ELSE 0 END), 0) AS saldo
+    IFNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.debe ELSE 0 END), 0) AS total_debe,
+    IFNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.haber ELSE 0 END), 0) AS total_haber,
+    IFNULL(SUM(CASE WHEN a.fecha BETWEEN @FechaInicio AND @FechaFin THEN d.haber - d.debe ELSE 0 END), 0) AS saldo
 
 FROM Detalle_Asiento d
 JOIN Cuentas c ON d.cuenta_id = c.cuenta_id
@@ -392,8 +392,8 @@ GROUP BY c.cuenta_id, c.codigo, c.nombre
 
             var resultado = await _context.Set<EstadosFinancieros>()
                 .FromSqlRaw(query,
-                    new SqlParameter("@FechaInicio", periodo.fecha_inicio),
-                    new SqlParameter("@FechaFin", periodo.fecha_fin))
+                    new MySqlParameter("@FechaInicio", periodo.fecha_inicio),
+                    new MySqlParameter("@FechaFin", periodo.fecha_fin))
                 .ToListAsync();
 
             return Ok(resultado);

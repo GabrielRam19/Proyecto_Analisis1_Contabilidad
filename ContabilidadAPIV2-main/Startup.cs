@@ -10,12 +10,15 @@ public static class Startup
         var builder = WebApplication.CreateBuilder(args);
         ConfigureService(builder);
 
-        // Nueva cadena de conexión para SQL Server
-        var stringConexion = "Server=localhost,1433;Database=DB_CONTABILIDAD;User Id=admin;Password=1234;TrustServerCertificate=True;";
+        // Cadena de conexión para MySQL
+        var stringConexion = "Server=localhost;Database=DB_CONTABILIDAD;User=root;Password=1234;";
 
-        // Configurar el DbContext para SQL Server
-        builder.Services.AddDbContext<ContabilidadContext>(
-            options => options.UseSqlServer(stringConexion)
+        // Configurar el DbContext para MySQL usando Pomelo
+        builder.Services.AddDbContext<ContabilidadContext>(options =>
+            options.UseMySql(
+                stringConexion,
+                new MySqlServerVersion(new Version(8, 0, 36)) // Cambia esta versión según la que tengas instalada
+            )
         );
 
         var app = builder.Build();

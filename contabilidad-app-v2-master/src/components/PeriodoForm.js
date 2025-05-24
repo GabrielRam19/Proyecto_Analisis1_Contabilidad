@@ -54,25 +54,31 @@ const PeriodoForm = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
+const handleSubmit = (event) => {
   event.preventDefault();
 
   const fechaInicioActual = new Date(periodo.fecha_inicio);
 
+  // Convertir id_periodo_anterior: '' => null, string a int si tiene valor
+  const idPeriodoAnteriorProcesado =
+    periodo.id_periodo_anterior === '' || periodo.id_periodo_anterior === null
+      ? null
+      : parseInt(periodo.id_periodo_anterior);
+
   // Validación: No se puede seleccionar el mismo periodo como anterior
   if (
-    periodo.id_periodo_anterior &&
+    idPeriodoAnteriorProcesado &&
     id_periodo &&
-    parseInt(periodo.id_periodo_anterior) === parseInt(id_periodo)
+    idPeriodoAnteriorProcesado === parseInt(id_periodo)
   ) {
     alert('No puedes seleccionar el mismo periodo como periodo anterior.');
     return;
   }
 
   // Validación: el periodo anterior no puede tener fecha mayor o igual al actual
-  if (periodo.id_periodo_anterior) {
+  if (idPeriodoAnteriorProcesado) {
     const periodoAnterior = periodosCerrados.find(
-      (p) => parseInt(p.id_periodo) === parseInt(periodo.id_periodo_anterior)
+      (p) => parseInt(p.id_periodo) === idPeriodoAnteriorProcesado
     );
 
     if (periodoAnterior) {
@@ -91,15 +97,21 @@ const PeriodoForm = () => {
     }
   }
 
-  // Si pasa las validaciones, envía los datos
+  // Construir objeto a enviar con el id_periodo_anterior procesado
+  const periodoParaEnviar = {
+    ...periodo,
+    id_periodo_anterior: idPeriodoAnteriorProcesado,
+  };
+
+  // Enviar según si es creación o edición
   if (id_periodo) {
     axios
-      .put(`http://localhost:5000/api/PERIODOS/${id_periodo}`, periodo)
+      .put(`http://localhost:5000/api/PERIODOS/${id_periodo}`, periodoParaEnviar)
       .then(() => navigate('/periodos'))
       .catch((error) => console.error(error));
   } else {
     axios
-      .post('http://localhost:5000/api/PERIODOS', periodo)
+      .post('http://localhost:5000/api/PERIODOS', periodoParaEnviar)
       .then(() => navigate('/periodos'))
       .catch((error) => console.error(error));
   }

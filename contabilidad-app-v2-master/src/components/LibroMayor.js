@@ -52,6 +52,12 @@ const LibroMayor = () => {
       .catch(error => console.error('Error al obtener libro mayor:', error));
   };
 
+  const formatDate = (fecha) => {
+  const [year, month, day] = fecha.split('T')[0].split('-');
+  const date = new Date(year, month - 1, day);
+  return date.toLocaleDateString('es-GT');
+};
+
   const exportToExcel = () => {
     const flatData = libroMayor.flatMap(cuenta => [
       {
@@ -70,7 +76,7 @@ const LibroMayor = () => {
         Nombre: cuenta.nombre,
         CuentaPadre: cuenta.codigoCuentaPadre || '---',
         Nivel: cuenta.nivelJerarquia,
-        Fecha: mov.fecha,
+        Fecha: formatDate(mov.fecha),
         Descripcion: mov.descripcion,
         Debe: mov.debe,
         Haber: mov.haber,
@@ -101,7 +107,7 @@ const LibroMayor = () => {
       const bodyData = [
         ['--', '', '', cuenta.saldoInicial.toFixed(2)],
         ...cuenta.movimientos.map(mov => [
-          mov.fecha,
+          formatDate(mov.fecha),
           mov.debe.toFixed(2),
           mov.haber.toFixed(2),
           mov.saldo.toFixed(2),
@@ -125,35 +131,23 @@ const LibroMayor = () => {
   });
 
   return (
-    <TableContainer
-      component={Paper}
-      sx={{
-        backgroundColor: negro,
-        color: blanco,
-        padding: 3,
-        borderRadius: 2,
-        boxShadow: '0 0 10px rgba(212,175,55,0.5)',
-      }}
-    >
+    <TableContainer component={Paper} sx={{
+      backgroundColor: negro,
+      color: blanco,
+      padding: 3,
+      borderRadius: 2,
+      boxShadow: '0 0 10px rgba(212,175,55,0.5)',
+    }}>
       <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold', color: dorado, textAlign: 'center' }}>
         Libro Mayor
       </Typography>
 
       {showAlert && (
-        <Alert
-          severity="warning"
-          action={
-            <IconButton
-              aria-label="cerrar alerta"
-              color="inherit"
-              size="small"
-              onClick={() => setShowAlert(false)}
-            >
-              <CloseIcon fontSize="inherit" />
-            </IconButton>
-          }
-          sx={{ mb: 3 }}
-        >
+        <Alert severity="warning" action={
+          <IconButton color="inherit" size="small" onClick={() => setShowAlert(false)}>
+            <CloseIcon fontSize="inherit" />
+          </IconButton>
+        } sx={{ mb: 3 }}>
           Está mostrando un período abierto. Los valores mostrados no incluyen saldos del período anterior.
         </Alert>
       )}
@@ -178,7 +172,7 @@ const LibroMayor = () => {
           >
             {periodos.map(p => (
               <MenuItem key={p.id_periodo} value={p.id_periodo}>
-                {`${p.descripcion} (${new Date(p.fecha_inicio).toLocaleDateString()} - ${new Date(p.fecha_fin).toLocaleDateString()})`}
+                {`${p.descripcion} (${formatDate(p.fecha_inicio)} - ${formatDate(p.fecha_fin)})`}
               </MenuItem>
             ))}
           </Select>
@@ -233,7 +227,7 @@ const LibroMayor = () => {
               {cuenta.movimientos.map((mov, i) => (
                 <TableRow key={i}
                   sx={{ '&:nth-of-type(odd)': { backgroundColor: grisOscuro }, '&:hover': { backgroundColor: '#3e3e3e' } }}>
-                  <TableCell sx={{ color: blanco }}>{mov.fecha}</TableCell>
+                  <TableCell sx={{ color: blanco }}>{formatDate(mov.fecha)}</TableCell>
                   <TableCell sx={{ color: blanco }}>{formatter.format(mov.debe)}</TableCell>
                   <TableCell sx={{ color: blanco }}>{formatter.format(mov.haber)}</TableCell>
                   <TableCell sx={{ color: blanco }}>{formatter.format(mov.saldo)}</TableCell>
